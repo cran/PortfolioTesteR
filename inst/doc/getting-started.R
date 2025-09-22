@@ -1,0 +1,218 @@
+## ----setup, include = FALSE---------------------------------------------------
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 7,
+  fig.height = 5,
+  message = FALSE,
+  warning = FALSE
+)
+
+## ----install, eval=FALSE------------------------------------------------------
+# # Install from GitHub
+# # (Skip during CRAN checks and vignette builds.)
+# devtools::install_github("alb3rtazzo/PortfolioTesteR")
+
+## ----load---------------------------------------------------------------------
+library(PortfolioTesteR)
+
+## ----strategy1----------------------------------------------------------------
+# Load included weekly prices
+data(sample_prices_weekly)
+
+# 1) Momentum signal
+momentum <- calc_momentum(sample_prices_weekly, lookback = 12)
+
+# 2) Select top 10 by momentum
+selected <- filter_top_n(momentum, n = 10)
+
+# 3) Equal weights
+weights <- weight_equally(selected)
+
+# 4) Backtest
+result1 <- run_backtest(
+  prices = sample_prices_weekly,
+  weights = weights,
+  initial_capital = 100000,
+  name = "Simple Momentum"
+)
+
+# 5) Results
+print(result1)
+summary(result1)
+
+## ----strategy1_plot-----------------------------------------------------------
+plot(result1, type = "performance")
+
+## ----strategy2----------------------------------------------------------------
+# Need daily data for volatility
+data(sample_prices_daily)
+
+# A) Momentum (12-week)
+momentum <- calc_momentum(sample_prices_weekly, lookback = 12)
+
+# B) Daily volatility → align weekly → invert (low vol = high score)
+daily_vol <- calc_rolling_volatility(sample_prices_daily, lookback = 20)
+weekly_vol <- align_to_timeframe(
+  high_freq_data = daily_vol,
+  low_freq_dates = sample_prices_weekly$Date,
+  method = "forward_fill"
+)
+stability_signal <- invert_signal(weekly_vol)
+
+# Select top 20 for each signal
+m_sel <- filter_top_n(momentum, n = 20)
+s_sel <- filter_top_n(stability_signal, n = 20)
+
+# AND-combine the selections
+both <- combine_filters(m_sel, s_sel, op = "and")
+
+# Weight each way then blend 60/40
+w_mom <- weight_by_signal(both, momentum)
+w_stab <- weight_by_signal(both, stability_signal)
+weights2 <- combine_weights(list(w_mom, w_stab), weights = c(0.6, 0.4))
+
+# Backtest
+result2 <- run_backtest(
+  prices = sample_prices_weekly,
+  weights = weights2,
+  initial_capital = 100000,
+  name = "Momentum + Low Vol"
+)
+
+print(result2)
+summary(result2)
+
+## ----strategy2_plot-----------------------------------------------------------
+plot(result2, type = "performance")
+
+## ----strategy3----------------------------------------------------------------
+# Signals and selection
+momentum <- calc_momentum(sample_prices_weekly, lookback = 12)
+sel <- filter_top_n(momentum, n = 10)
+weights_mom <- weight_by_signal(sel, momentum)
+
+# With 15% stop-loss (daily monitoring)
+result3_with <- run_backtest(
+  prices = sample_prices_weekly,
+  weights = weights_mom,
+  initial_capital = 100000,
+  name = "Momentum with 15% Stop Loss",
+  stop_loss = 0.15,
+  stop_monitoring_prices = sample_prices_daily
+)
+
+# Without stop-loss
+result3_no <- run_backtest(
+  prices = sample_prices_weekly,
+  weights = weights_mom,
+  initial_capital = 100000,
+  name = "Momentum without Stop Loss"
+)
+
+cat("WITH Stop Loss:\n")
+print(result3_with)
+cat("\nWITHOUT Stop Loss:\n")
+print(result3_no)
+
+## ----strategy3_plot-----------------------------------------------------------
+# Plot both separately to avoid cramped figures
+plot(result3_with, type = "performance")
+plot(result3_no, type = "performance")
+
+## ----strategy4----------------------------------------------------------------
+# Extract SPY for regime detection
+spy_prices <- sample_prices_weekly[, .(Date, SPY)]
+
+# Trading universe (exclude SPY)
+trading_symbols <- setdiff(names(sample_prices_weekly), c("Date", "SPY"))
+trading_prices <- sample_prices_weekly[, c("Date", trading_symbols), with = FALSE]
+trading_daily  <- sample_prices_daily[,  c("Date", trading_symbols), with = FALSE]
+
+# SPY weekly returns & 20-week rolling volatility (annualized)
+spy_returns <- c(NA, diff(spy_prices$SPY) / head(spy_prices$SPY, -1))
+spy_vol <- zoo::rollapply(spy_returns, width = 20, FUN = sd, fill = NA, align = "right") * sqrt(52)
+
+# High-vol regime = above median
+vol_threshold <- median(spy_vol, na.rm = TRUE)
+high_vol <- spy_vol > vol_threshold
+
+# Selection by momentum
+mom <- calc_momentum(trading_prices, lookback = 12)
+sel <- filter_top_n(mom, n = 15)
+
+# Defensive (prefer low vol) vs Aggressive (prefer high vol) weights
+w_def <- weight_by_volatility(
+  selected_df = sel,
+  vol_timeframe_data = trading_daily,
+  strategy_timeframe_data = trading_prices,
+  lookback_periods = 20,
+  low_vol_preference = TRUE,
+  vol_method = "std"
+)
+
+w_agg <- weight_by_volatility(
+  selected_df = sel,
+  vol_timeframe_data = trading_daily,
+  strategy_timeframe_data = trading_prices,
+  lookback_periods = 20,
+  low_vol_preference = FALSE,
+  vol_method = "std"
+)
+
+# Switch weights by regime (defensive when high-vol is TRUE)
+weights4 <- switch_weights(
+  weights_a = w_agg,  # used when condition is FALSE (low vol)
+  weights_b = w_def,  # used when condition is TRUE  (high vol)
+  use_b_condition = high_vol
+)
+
+result4 <- run_backtest(
+  prices = trading_prices,
+  weights = weights4,
+  initial_capital = 100000,
+  name = "Regime-Adaptive Strategy"
+)
+
+print(result4)
+summary(result4)
+
+## ----strategy4_plot-----------------------------------------------------------
+plot(result4, type = "performance")
+
+## ----strategy5----------------------------------------------------------------
+# Signals
+momentum <- calc_momentum(sample_prices_weekly, lookback = 12)
+daily_vol <- calc_rolling_volatility(sample_prices_daily, lookback = 20)
+weekly_vol <- align_to_timeframe(daily_vol, sample_prices_weekly$Date, method = "forward_fill")
+stability <- invert_signal(weekly_vol)
+
+# Selection & position cap
+top30 <- filter_top_n(momentum, n = 30)
+sel15 <- limit_positions(top30, momentum, max_positions = 15)
+
+# Weights and blend (70/30)
+w_m <- weight_by_signal(sel15, momentum)
+w_s <- weight_by_signal(sel15, stability)
+weights5 <- combine_weights(list(w_m, w_s), weights = c(0.7, 0.3))
+
+# Backtest
+result5 <- run_backtest(
+  prices = sample_prices_weekly,
+  weights = weights5,
+  initial_capital = 100000,
+  name = "Multi-Factor with Position Limits"
+)
+
+print(result5)
+summary(result5)
+
+## ----strategy5_plot-----------------------------------------------------------
+plot(result5, type = "performance")
+
+## ----help, eval=FALSE---------------------------------------------------------
+# ?run_backtest
+# ?calc_momentum
+# ?filter_top_n
+# ?analyze_performance
+

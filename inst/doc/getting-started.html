@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>Getting Started with PortfolioTesteR</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Getting Started with PortfolioTesteR</h1>
+
+
+
+<div id="portfoliotester-test-investment-strategies-with-english-like-code" class="section level1">
+<h1>PortfolioTesteR: Test Investment Strategies with English-Like
+Code</h1>
+<p>PortfolioTesteR makes quantitative investing accessible through
+intuitive, English-like syntax. This vignette walks through five
+strategies from beginner to advanced, all using the included sample data
+so it builds quickly and reliably.</p>
+<blockquote>
+<p><strong>Note:</strong> Some functions also support external data
+(e.g., <code>yahoo_adapter()</code>), but for CRAN-friendly vignettes we
+use the bundled datasets.</p>
+</blockquote>
+<div id="installation" class="section level2">
+<h2>Installation</h2>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="co"># Install from GitHub</span></span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="co"># (Skip during CRAN checks and vignette builds.)</span></span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>devtools<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">&quot;alb3rtazzo/PortfolioTesteR&quot;</span>)</span></code></pre></div>
+</div>
+<div id="load-the-library" class="section level2">
+<h2>Load the Library</h2>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="fu">library</span>(PortfolioTesteR)</span></code></pre></div>
+</div>
+<div id="strategy-1-simple-momentum-beginner" class="section level2">
+<h2>Strategy 1: Simple Momentum (Beginner)</h2>
+<p>Buy the stocks with the highest 12-week returns, weight them equally,
+and backtest.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="co"># Load included weekly prices</span></span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a><span class="fu">data</span>(sample_prices_weekly)</span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a><span class="co"># 1) Momentum signal</span></span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>momentum <span class="ot">&lt;-</span> <span class="fu">calc_momentum</span>(sample_prices_weekly, <span class="at">lookback =</span> <span class="dv">12</span>)</span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a><span class="co"># 2) Select top 10 by momentum</span></span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a>selected <span class="ot">&lt;-</span> <span class="fu">filter_top_n</span>(momentum, <span class="at">n =</span> <span class="dv">10</span>)</span>
+<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a></span>
+<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a><span class="co"># 3) Equal weights</span></span>
+<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a>weights <span class="ot">&lt;-</span> <span class="fu">weight_equally</span>(selected)</span>
+<span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a></span>
+<span id="cb3-13"><a href="#cb3-13" tabindex="-1"></a><span class="co"># 4) Backtest</span></span>
+<span id="cb3-14"><a href="#cb3-14" tabindex="-1"></a>result1 <span class="ot">&lt;-</span> <span class="fu">run_backtest</span>(</span>
+<span id="cb3-15"><a href="#cb3-15" tabindex="-1"></a>  <span class="at">prices =</span> sample_prices_weekly,</span>
+<span id="cb3-16"><a href="#cb3-16" tabindex="-1"></a>  <span class="at">weights =</span> weights,</span>
+<span id="cb3-17"><a href="#cb3-17" tabindex="-1"></a>  <span class="at">initial_capital =</span> <span class="dv">100000</span>,</span>
+<span id="cb3-18"><a href="#cb3-18" tabindex="-1"></a>  <span class="at">name =</span> <span class="st">&quot;Simple Momentum&quot;</span></span>
+<span id="cb3-19"><a href="#cb3-19" tabindex="-1"></a>)</span>
+<span id="cb3-20"><a href="#cb3-20" tabindex="-1"></a></span>
+<span id="cb3-21"><a href="#cb3-21" tabindex="-1"></a><span class="co"># 5) Results</span></span>
+<span id="cb3-22"><a href="#cb3-22" tabindex="-1"></a><span class="fu">print</span>(result1)</span>
+<span id="cb3-23"><a href="#cb3-23" tabindex="-1"></a><span class="co">#&gt; Backtest Result:  Simple Momentum </span></span>
+<span id="cb3-24"><a href="#cb3-24" tabindex="-1"></a><span class="co">#&gt; =====================================</span></span>
+<span id="cb3-25"><a href="#cb3-25" tabindex="-1"></a><span class="co">#&gt; Period: 2017-01-06 to 2019-12-31 (158 observations)</span></span>
+<span id="cb3-26"><a href="#cb3-26" tabindex="-1"></a><span class="co">#&gt; Initial Capital: $1e+05</span></span>
+<span id="cb3-27"><a href="#cb3-27" tabindex="-1"></a><span class="co">#&gt; Final Value: $166,806</span></span>
+<span id="cb3-28"><a href="#cb3-28" tabindex="-1"></a><span class="co">#&gt; Total Return: 66.81%</span></span>
+<span id="cb3-29"><a href="#cb3-29" tabindex="-1"></a><span class="co">#&gt; Transactions: 1490</span></span>
+<span id="cb3-30"><a href="#cb3-30" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb3-31"><a href="#cb3-31" tabindex="-1"></a><span class="co">#&gt; Annualized Return: 18.34%</span></span>
+<span id="cb3-32"><a href="#cb3-32" tabindex="-1"></a><span class="co">#&gt; Annualized Volatility: 13.03%</span></span>
+<span id="cb3-33"><a href="#cb3-33" tabindex="-1"></a><span class="co">#&gt; Sharpe Ratio: 1.41</span></span>
+<span id="cb3-34"><a href="#cb3-34" tabindex="-1"></a><span class="co">#&gt; Max Drawdown: -16.61%</span></span>
+<span id="cb3-35"><a href="#cb3-35" tabindex="-1"></a><span class="fu">summary</span>(result1)</span>
+<span id="cb3-36"><a href="#cb3-36" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb3-37"><a href="#cb3-37" tabindex="-1"></a><span class="co">#&gt; Detailed Summary:  Simple Momentum </span></span>
+<span id="cb3-38"><a href="#cb3-38" tabindex="-1"></a><span class="co">#&gt; =====================================</span></span>
+<span id="cb3-39"><a href="#cb3-39" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb3-40"><a href="#cb3-40" tabindex="-1"></a><span class="co">#&gt; Position Statistics:</span></span>
+<span id="cb3-41"><a href="#cb3-41" tabindex="-1"></a><span class="co">#&gt;   Average positions held: 10.0</span></span>
+<span id="cb3-42"><a href="#cb3-42" tabindex="-1"></a><span class="co">#&gt;   Max positions held: 10</span></span>
+<span id="cb3-43"><a href="#cb3-43" tabindex="-1"></a><span class="co">#&gt;   Periods fully invested: 158 (100.0%)</span></span>
+<span id="cb3-44"><a href="#cb3-44" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb3-45"><a href="#cb3-45" tabindex="-1"></a><span class="co">#&gt; Transaction Summary:</span></span>
+<span id="cb3-46"><a href="#cb3-46" tabindex="-1"></a><span class="co">#&gt;   Total trades: 1490</span></span>
+<span id="cb3-47"><a href="#cb3-47" tabindex="-1"></a><span class="co">#&gt;   Avg trades per period: 9.4</span></span>
+<span id="cb3-48"><a href="#cb3-48" tabindex="-1"></a><span class="co">#&gt;   Annual turnover: 728.8%</span></span>
+<span id="cb3-49"><a href="#cb3-49" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb3-50"><a href="#cb3-50" tabindex="-1"></a><span class="co">#&gt; Return Distribution:</span></span>
+<span id="cb3-51"><a href="#cb3-51" tabindex="-1"></a><span class="co">#&gt;   Mean return: 0.341%</span></span>
+<span id="cb3-52"><a href="#cb3-52" tabindex="-1"></a><span class="co">#&gt;   Median return: 0.520%</span></span>
+<span id="cb3-53"><a href="#cb3-53" tabindex="-1"></a><span class="co">#&gt;   Best period: 5.19%</span></span>
+<span id="cb3-54"><a href="#cb3-54" tabindex="-1"></a><span class="co">#&gt;   Worst period: -6.86%</span></span>
+<span id="cb3-55"><a href="#cb3-55" tabindex="-1"></a><span class="co">#&gt;   Positive periods: 97 (61.4%)</span></span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="fu">plot</span>(result1, <span class="at">type =</span> <span class="st">&quot;performance&quot;</span>)</span></code></pre></div>
+<p><img role="img" src="data:image/png;base64,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" /><!-- --></p>
+</div>
+<div id="strategy-2-multi-signal-combination-intermediate" class="section level2">
+<h2>Strategy 2: Multi-Signal Combination (Intermediate)</h2>
+<p>Combine <strong>momentum</strong> (good = high) and
+<strong>stability</strong> (good = low volatility). Select stocks that
+rank well on both, then combine weights.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="co"># Need daily data for volatility</span></span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a><span class="fu">data</span>(sample_prices_daily)</span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a><span class="co"># A) Momentum (12-week)</span></span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a>momentum <span class="ot">&lt;-</span> <span class="fu">calc_momentum</span>(sample_prices_weekly, <span class="at">lookback =</span> <span class="dv">12</span>)</span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a></span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a><span class="co"># B) Daily volatility → align weekly → invert (low vol = high score)</span></span>
+<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a>daily_vol <span class="ot">&lt;-</span> <span class="fu">calc_rolling_volatility</span>(sample_prices_daily, <span class="at">lookback =</span> <span class="dv">20</span>)</span>
+<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a>weekly_vol <span class="ot">&lt;-</span> <span class="fu">align_to_timeframe</span>(</span>
+<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a>  <span class="at">high_freq_data =</span> daily_vol,</span>
+<span id="cb5-11"><a href="#cb5-11" tabindex="-1"></a>  <span class="at">low_freq_dates =</span> sample_prices_weekly<span class="sc">$</span>Date,</span>
+<span id="cb5-12"><a href="#cb5-12" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">&quot;forward_fill&quot;</span></span>
+<span id="cb5-13"><a href="#cb5-13" tabindex="-1"></a>)</span>
+<span id="cb5-14"><a href="#cb5-14" tabindex="-1"></a>stability_signal <span class="ot">&lt;-</span> <span class="fu">invert_signal</span>(weekly_vol)</span>
+<span id="cb5-15"><a href="#cb5-15" tabindex="-1"></a></span>
+<span id="cb5-16"><a href="#cb5-16" tabindex="-1"></a><span class="co"># Select top 20 for each signal</span></span>
+<span id="cb5-17"><a href="#cb5-17" tabindex="-1"></a>m_sel <span class="ot">&lt;-</span> <span class="fu">filter_top_n</span>(momentum, <span class="at">n =</span> <span class="dv">20</span>)</span>
+<span id="cb5-18"><a href="#cb5-18" tabindex="-1"></a>s_sel <span class="ot">&lt;-</span> <span class="fu">filter_top_n</span>(stability_signal, <span class="at">n =</span> <span class="dv">20</span>)</span>
+<span id="cb5-19"><a href="#cb5-19" tabindex="-1"></a></span>
+<span id="cb5-20"><a href="#cb5-20" tabindex="-1"></a><span class="co"># AND-combine the selections</span></span>
+<span id="cb5-21"><a href="#cb5-21" tabindex="-1"></a>both <span class="ot">&lt;-</span> <span class="fu">combine_filters</span>(m_sel, s_sel, <span class="at">op =</span> <span class="st">&quot;and&quot;</span>)</span>
+<span id="cb5-22"><a href="#cb5-22" tabindex="-1"></a></span>
+<span id="cb5-23"><a href="#cb5-23" tabindex="-1"></a><span class="co"># Weight each way then blend 60/40</span></span>
+<span id="cb5-24"><a href="#cb5-24" tabindex="-1"></a>w_mom <span class="ot">&lt;-</span> <span class="fu">weight_by_signal</span>(both, momentum)</span>
+<span id="cb5-25"><a href="#cb5-25" tabindex="-1"></a>w_stab <span class="ot">&lt;-</span> <span class="fu">weight_by_signal</span>(both, stability_signal)</span>
+<span id="cb5-26"><a href="#cb5-26" tabindex="-1"></a>weights2 <span class="ot">&lt;-</span> <span class="fu">combine_weights</span>(<span class="fu">list</span>(w_mom, w_stab), <span class="at">weights =</span> <span class="fu">c</span>(<span class="fl">0.6</span>, <span class="fl">0.4</span>))</span>
+<span id="cb5-27"><a href="#cb5-27" tabindex="-1"></a></span>
+<span id="cb5-28"><a href="#cb5-28" tabindex="-1"></a><span class="co"># Backtest</span></span>
+<span id="cb5-29"><a href="#cb5-29" tabindex="-1"></a>result2 <span class="ot">&lt;-</span> <span class="fu">run_backtest</span>(</span>
+<span id="cb5-30"><a href="#cb5-30" tabindex="-1"></a>  <span class="at">prices =</span> sample_prices_weekly,</span>
+<span id="cb5-31"><a href="#cb5-31" tabindex="-1"></a>  <span class="at">weights =</span> weights2,</span>
+<span id="cb5-32"><a href="#cb5-32" tabindex="-1"></a>  <span class="at">initial_capital =</span> <span class="dv">100000</span>,</span>
+<span id="cb5-33"><a href="#cb5-33" tabindex="-1"></a>  <span class="at">name =</span> <span class="st">&quot;Momentum + Low Vol&quot;</span></span>
+<span id="cb5-34"><a href="#cb5-34" tabindex="-1"></a>)</span>
+<span id="cb5-35"><a href="#cb5-35" tabindex="-1"></a></span>
+<span id="cb5-36"><a href="#cb5-36" tabindex="-1"></a><span class="fu">print</span>(result2)</span>
+<span id="cb5-37"><a href="#cb5-37" tabindex="-1"></a><span class="co">#&gt; Backtest Result:  Momentum + Low Vol </span></span>
+<span id="cb5-38"><a href="#cb5-38" tabindex="-1"></a><span class="co">#&gt; =====================================</span></span>
+<span id="cb5-39"><a href="#cb5-39" tabindex="-1"></a><span class="co">#&gt; Warmup Period: 4 observations (no trading)</span></span>
+<span id="cb5-40"><a href="#cb5-40" tabindex="-1"></a><span class="co">#&gt; Active Period: 2017-02-03 to 2019-12-31 (154 observations)</span></span>
+<span id="cb5-41"><a href="#cb5-41" tabindex="-1"></a><span class="co">#&gt; Initial Capital: $1e+05</span></span>
+<span id="cb5-42"><a href="#cb5-42" tabindex="-1"></a><span class="co">#&gt; Final Value: $165,430</span></span>
+<span id="cb5-43"><a href="#cb5-43" tabindex="-1"></a><span class="co">#&gt; Total Return (active period): 65.43%</span></span>
+<span id="cb5-44"><a href="#cb5-44" tabindex="-1"></a><span class="co">#&gt; Total Return (full period): 65.43%</span></span>
+<span id="cb5-45"><a href="#cb5-45" tabindex="-1"></a><span class="co">#&gt; Transactions: 2579</span></span>
+<span id="cb5-46"><a href="#cb5-46" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb5-47"><a href="#cb5-47" tabindex="-1"></a><span class="co">#&gt; Annualized Return: 18.53%</span></span>
+<span id="cb5-48"><a href="#cb5-48" tabindex="-1"></a><span class="co">#&gt; Annualized Volatility: 12.65%</span></span>
+<span id="cb5-49"><a href="#cb5-49" tabindex="-1"></a><span class="co">#&gt; Sharpe Ratio: 1.46</span></span>
+<span id="cb5-50"><a href="#cb5-50" tabindex="-1"></a><span class="co">#&gt; Max Drawdown: -13.99%</span></span>
+<span id="cb5-51"><a href="#cb5-51" tabindex="-1"></a><span class="fu">summary</span>(result2)</span>
+<span id="cb5-52"><a href="#cb5-52" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb5-53"><a href="#cb5-53" tabindex="-1"></a><span class="co">#&gt; Detailed Summary:  Momentum + Low Vol </span></span>
+<span id="cb5-54"><a href="#cb5-54" tabindex="-1"></a><span class="co">#&gt; =====================================</span></span>
+<span id="cb5-55"><a href="#cb5-55" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb5-56"><a href="#cb5-56" tabindex="-1"></a><span class="co">#&gt; Position Statistics:</span></span>
+<span id="cb5-57"><a href="#cb5-57" tabindex="-1"></a><span class="co">#&gt;   Average positions held: 19.5</span></span>
+<span id="cb5-58"><a href="#cb5-58" tabindex="-1"></a><span class="co">#&gt;   Max positions held: 20</span></span>
+<span id="cb5-59"><a href="#cb5-59" tabindex="-1"></a><span class="co">#&gt;   Periods fully invested: 62 (39.2%)</span></span>
+<span id="cb5-60"><a href="#cb5-60" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb5-61"><a href="#cb5-61" tabindex="-1"></a><span class="co">#&gt; Transaction Summary:</span></span>
+<span id="cb5-62"><a href="#cb5-62" tabindex="-1"></a><span class="co">#&gt;   Total trades: 2579</span></span>
+<span id="cb5-63"><a href="#cb5-63" tabindex="-1"></a><span class="co">#&gt;   Avg trades per period: 16.3</span></span>
+<span id="cb5-64"><a href="#cb5-64" tabindex="-1"></a><span class="co">#&gt;   Annual turnover: 574.1%</span></span>
+<span id="cb5-65"><a href="#cb5-65" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb5-66"><a href="#cb5-66" tabindex="-1"></a><span class="co">#&gt; Return Distribution:</span></span>
+<span id="cb5-67"><a href="#cb5-67" tabindex="-1"></a><span class="co">#&gt;   Mean return: 0.334%</span></span>
+<span id="cb5-68"><a href="#cb5-68" tabindex="-1"></a><span class="co">#&gt;   Median return: 0.557%</span></span>
+<span id="cb5-69"><a href="#cb5-69" tabindex="-1"></a><span class="co">#&gt;   Best period: 5.45%</span></span>
+<span id="cb5-70"><a href="#cb5-70" tabindex="-1"></a><span class="co">#&gt;   Worst period: -5.93%</span></span>
+<span id="cb5-71"><a href="#cb5-71" tabindex="-1"></a><span class="co">#&gt;   Positive periods: 98 (62.0%)</span></span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="fu">plot</span>(result2, <span class="at">type =</span> <span class="st">&quot;performance&quot;</span>)</span></code></pre></div>
+<p><img role="img" src="data:image/png;base64,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" /><!-- --></p>
+</div>
+<div id="strategy-3-risk-managed-momentum-with-stop-loss-intermediate" class="section level2">
+<h2>Strategy 3: Risk-Managed Momentum with Stop Loss (Intermediate)</h2>
+<p>Add a <strong>15% stop loss</strong> monitored on daily prices. (We
+compare the same strategy with and without stops.)</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="co"># Signals and selection</span></span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>momentum <span class="ot">&lt;-</span> <span class="fu">calc_momentum</span>(sample_prices_weekly, <span class="at">lookback =</span> <span class="dv">12</span>)</span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>sel <span class="ot">&lt;-</span> <span class="fu">filter_top_n</span>(momentum, <span class="at">n =</span> <span class="dv">10</span>)</span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a>weights_mom <span class="ot">&lt;-</span> <span class="fu">weight_by_signal</span>(sel, momentum)</span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a></span>
+<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a><span class="co"># With 15% stop-loss (daily monitoring)</span></span>
+<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a>result3_with <span class="ot">&lt;-</span> <span class="fu">run_backtest</span>(</span>
+<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a>  <span class="at">prices =</span> sample_prices_weekly,</span>
+<span id="cb7-9"><a href="#cb7-9" tabindex="-1"></a>  <span class="at">weights =</span> weights_mom,</span>
+<span id="cb7-10"><a href="#cb7-10" tabindex="-1"></a>  <span class="at">initial_capital =</span> <span class="dv">100000</span>,</span>
+<span id="cb7-11"><a href="#cb7-11" tabindex="-1"></a>  <span class="at">name =</span> <span class="st">&quot;Momentum with 15% Stop Loss&quot;</span>,</span>
+<span id="cb7-12"><a href="#cb7-12" tabindex="-1"></a>  <span class="at">stop_loss =</span> <span class="fl">0.15</span>,</span>
+<span id="cb7-13"><a href="#cb7-13" tabindex="-1"></a>  <span class="at">stop_monitoring_prices =</span> sample_prices_daily</span>
+<span id="cb7-14"><a href="#cb7-14" tabindex="-1"></a>)</span>
+<span id="cb7-15"><a href="#cb7-15" tabindex="-1"></a></span>
+<span id="cb7-16"><a href="#cb7-16" tabindex="-1"></a><span class="co"># Without stop-loss</span></span>
+<span id="cb7-17"><a href="#cb7-17" tabindex="-1"></a>result3_no <span class="ot">&lt;-</span> <span class="fu">run_backtest</span>(</span>
+<span id="cb7-18"><a href="#cb7-18" tabindex="-1"></a>  <span class="at">prices =</span> sample_prices_weekly,</span>
+<span id="cb7-19"><a href="#cb7-19" tabindex="-1"></a>  <span class="at">weights =</span> weights_mom,</span>
+<span id="cb7-20"><a href="#cb7-20" tabindex="-1"></a>  <span class="at">initial_capital =</span> <span class="dv">100000</span>,</span>
+<span id="cb7-21"><a href="#cb7-21" tabindex="-1"></a>  <span class="at">name =</span> <span class="st">&quot;Momentum without Stop Loss&quot;</span></span>
+<span id="cb7-22"><a href="#cb7-22" tabindex="-1"></a>)</span>
+<span id="cb7-23"><a href="#cb7-23" tabindex="-1"></a></span>
+<span id="cb7-24"><a href="#cb7-24" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;WITH Stop Loss:</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb7-25"><a href="#cb7-25" tabindex="-1"></a><span class="co">#&gt; WITH Stop Loss:</span></span>
+<span id="cb7-26"><a href="#cb7-26" tabindex="-1"></a><span class="fu">print</span>(result3_with)</span>
+<span id="cb7-27"><a href="#cb7-27" tabindex="-1"></a><span class="co">#&gt; Backtest Result:  Momentum with 15% Stop Loss </span></span>
+<span id="cb7-28"><a href="#cb7-28" tabindex="-1"></a><span class="co">#&gt; =====================================</span></span>
+<span id="cb7-29"><a href="#cb7-29" tabindex="-1"></a><span class="co">#&gt; Warmup Period: 12 observations (no trading)</span></span>
+<span id="cb7-30"><a href="#cb7-30" tabindex="-1"></a><span class="co">#&gt; Active Period: 2017-03-31 to 2019-12-31 (146 observations)</span></span>
+<span id="cb7-31"><a href="#cb7-31" tabindex="-1"></a><span class="co">#&gt; Initial Capital: $1e+05</span></span>
+<span id="cb7-32"><a href="#cb7-32" tabindex="-1"></a><span class="co">#&gt; Final Value: $162,260</span></span>
+<span id="cb7-33"><a href="#cb7-33" tabindex="-1"></a><span class="co">#&gt; Total Return (active period): 62.26%</span></span>
+<span id="cb7-34"><a href="#cb7-34" tabindex="-1"></a><span class="co">#&gt; Total Return (full period): 62.26%</span></span>
+<span id="cb7-35"><a href="#cb7-35" tabindex="-1"></a><span class="co">#&gt; Transactions: 1513</span></span>
+<span id="cb7-36"><a href="#cb7-36" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb7-37"><a href="#cb7-37" tabindex="-1"></a><span class="co">#&gt; Annualized Return: 18.81%</span></span>
+<span id="cb7-38"><a href="#cb7-38" tabindex="-1"></a><span class="co">#&gt; Annualized Volatility: 13.60%</span></span>
+<span id="cb7-39"><a href="#cb7-39" tabindex="-1"></a><span class="co">#&gt; Sharpe Ratio: 1.38</span></span>
+<span id="cb7-40"><a href="#cb7-40" tabindex="-1"></a><span class="co">#&gt; Max Drawdown: -12.28%</span></span>
+<span id="cb7-41"><a href="#cb7-41" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;</span><span class="sc">\n</span><span class="st">WITHOUT Stop Loss:</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb7-42"><a href="#cb7-42" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb7-43"><a href="#cb7-43" tabindex="-1"></a><span class="co">#&gt; WITHOUT Stop Loss:</span></span>
+<span id="cb7-44"><a href="#cb7-44" tabindex="-1"></a><span class="fu">print</span>(result3_no)</span>
+<span id="cb7-45"><a href="#cb7-45" tabindex="-1"></a><span class="co">#&gt; Backtest Result:  Momentum without Stop Loss </span></span>
+<span id="cb7-46"><a href="#cb7-46" tabindex="-1"></a><span class="co">#&gt; =====================================</span></span>
+<span id="cb7-47"><a href="#cb7-47" tabindex="-1"></a><span class="co">#&gt; Warmup Period: 12 observations (no trading)</span></span>
+<span id="cb7-48"><a href="#cb7-48" tabindex="-1"></a><span class="co">#&gt; Active Period: 2017-03-31 to 2019-12-31 (146 observations)</span></span>
+<span id="cb7-49"><a href="#cb7-49" tabindex="-1"></a><span class="co">#&gt; Initial Capital: $1e+05</span></span>
+<span id="cb7-50"><a href="#cb7-50" tabindex="-1"></a><span class="co">#&gt; Final Value: $162,260</span></span>
+<span id="cb7-51"><a href="#cb7-51" tabindex="-1"></a><span class="co">#&gt; Total Return (active period): 62.26%</span></span>
+<span id="cb7-52"><a href="#cb7-52" tabindex="-1"></a><span class="co">#&gt; Total Return (full period): 62.26%</span></span>
+<span id="cb7-53"><a href="#cb7-53" tabindex="-1"></a><span class="co">#&gt; Transactions: 1513</span></span>
+<span id="cb7-54"><a href="#cb7-54" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb7-55"><a href="#cb7-55" tabindex="-1"></a><span class="co">#&gt; Annualized Return: 18.81%</span></span>
+<span id="cb7-56"><a href="#cb7-56" tabindex="-1"></a><span class="co">#&gt; Annualized Volatility: 13.60%</span></span>
+<span id="cb7-57"><a href="#cb7-57" tabindex="-1"></a><span class="co">#&gt; Sharpe Ratio: 1.38</span></span>
+<span id="cb7-58"><a href="#cb7-58" tabindex="-1"></a><span class="co">#&gt; Max Drawdown: -12.28%</span></span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="co"># Plot both separately to avoid cramped figures</span></span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a><span class="fu">plot</span>(result3_with, <span class="at">type =</span> <span class="st">&quot;performance&quot;</span>)</span></code></pre></div>
+<p><img role="img" src="data:image/png;base64,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" /><!-- --></p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="fu">plot</span>(result3_no, <span class="at">type =</span> <span class="st">&quot;performance&quot;</span>)</span></code></pre></div>
+<p><img role="img" src="data:image/png;base64,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" /><!-- --></p>
+</div>
+<div id="strategy-4-regime-adaptive-volatility-advanced" class="section level2">
+<h2>Strategy 4: Regime-Adaptive Volatility (Advanced)</h2>
+<p>Detect market <strong>volatility regimes</strong> using SPY’s rolling
+volatility. Use <strong>defensive</strong> weights in high-vol regimes
+and <strong>aggressive</strong> weights in low-vol regimes.</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="co"># Extract SPY for regime detection</span></span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a>spy_prices <span class="ot">&lt;-</span> sample_prices_weekly[, .(Date, SPY)]</span>
+<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a></span>
+<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a><span class="co"># Trading universe (exclude SPY)</span></span>
+<span id="cb10-5"><a href="#cb10-5" tabindex="-1"></a>trading_symbols <span class="ot">&lt;-</span> <span class="fu">setdiff</span>(<span class="fu">names</span>(sample_prices_weekly), <span class="fu">c</span>(<span class="st">&quot;Date&quot;</span>, <span class="st">&quot;SPY&quot;</span>))</span>
+<span id="cb10-6"><a href="#cb10-6" tabindex="-1"></a>trading_prices <span class="ot">&lt;-</span> sample_prices_weekly[, <span class="fu">c</span>(<span class="st">&quot;Date&quot;</span>, trading_symbols), with <span class="ot">=</span> <span class="cn">FALSE</span>]</span>
+<span id="cb10-7"><a href="#cb10-7" tabindex="-1"></a>trading_daily  <span class="ot">&lt;-</span> sample_prices_daily[,  <span class="fu">c</span>(<span class="st">&quot;Date&quot;</span>, trading_symbols), with <span class="ot">=</span> <span class="cn">FALSE</span>]</span>
+<span id="cb10-8"><a href="#cb10-8" tabindex="-1"></a></span>
+<span id="cb10-9"><a href="#cb10-9" tabindex="-1"></a><span class="co"># SPY weekly returns &amp; 20-week rolling volatility (annualized)</span></span>
+<span id="cb10-10"><a href="#cb10-10" tabindex="-1"></a>spy_returns <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="cn">NA</span>, <span class="fu">diff</span>(spy_prices<span class="sc">$</span>SPY) <span class="sc">/</span> <span class="fu">head</span>(spy_prices<span class="sc">$</span>SPY, <span class="sc">-</span><span class="dv">1</span>))</span>
+<span id="cb10-11"><a href="#cb10-11" tabindex="-1"></a>spy_vol <span class="ot">&lt;-</span> zoo<span class="sc">::</span><span class="fu">rollapply</span>(spy_returns, <span class="at">width =</span> <span class="dv">20</span>, <span class="at">FUN =</span> sd, <span class="at">fill =</span> <span class="cn">NA</span>, <span class="at">align =</span> <span class="st">&quot;right&quot;</span>) <span class="sc">*</span> <span class="fu">sqrt</span>(<span class="dv">52</span>)</span>
+<span id="cb10-12"><a href="#cb10-12" tabindex="-1"></a></span>
+<span id="cb10-13"><a href="#cb10-13" tabindex="-1"></a><span class="co"># High-vol regime = above median</span></span>
+<span id="cb10-14"><a href="#cb10-14" tabindex="-1"></a>vol_threshold <span class="ot">&lt;-</span> <span class="fu">median</span>(spy_vol, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb10-15"><a href="#cb10-15" tabindex="-1"></a>high_vol <span class="ot">&lt;-</span> spy_vol <span class="sc">&gt;</span> vol_threshold</span>
+<span id="cb10-16"><a href="#cb10-16" tabindex="-1"></a></span>
+<span id="cb10-17"><a href="#cb10-17" tabindex="-1"></a><span class="co"># Selection by momentum</span></span>
+<span id="cb10-18"><a href="#cb10-18" tabindex="-1"></a>mom <span class="ot">&lt;-</span> <span class="fu">calc_momentum</span>(trading_prices, <span class="at">lookback =</span> <span class="dv">12</span>)</span>
+<span id="cb10-19"><a href="#cb10-19" tabindex="-1"></a>sel <span class="ot">&lt;-</span> <span class="fu">filter_top_n</span>(mom, <span class="at">n =</span> <span class="dv">15</span>)</span>
+<span id="cb10-20"><a href="#cb10-20" tabindex="-1"></a></span>
+<span id="cb10-21"><a href="#cb10-21" tabindex="-1"></a><span class="co"># Defensive (prefer low vol) vs Aggressive (prefer high vol) weights</span></span>
+<span id="cb10-22"><a href="#cb10-22" tabindex="-1"></a>w_def <span class="ot">&lt;-</span> <span class="fu">weight_by_volatility</span>(</span>
+<span id="cb10-23"><a href="#cb10-23" tabindex="-1"></a>  <span class="at">selected_df =</span> sel,</span>
+<span id="cb10-24"><a href="#cb10-24" tabindex="-1"></a>  <span class="at">vol_timeframe_data =</span> trading_daily,</span>
+<span id="cb10-25"><a href="#cb10-25" tabindex="-1"></a>  <span class="at">strategy_timeframe_data =</span> trading_prices,</span>
+<span id="cb10-26"><a href="#cb10-26" tabindex="-1"></a>  <span class="at">lookback_periods =</span> <span class="dv">20</span>,</span>
+<span id="cb10-27"><a href="#cb10-27" tabindex="-1"></a>  <span class="at">low_vol_preference =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb10-28"><a href="#cb10-28" tabindex="-1"></a>  <span class="at">vol_method =</span> <span class="st">&quot;std&quot;</span></span>
+<span id="cb10-29"><a href="#cb10-29" tabindex="-1"></a>)</span>
+<span id="cb10-30"><a href="#cb10-30" tabindex="-1"></a></span>
+<span id="cb10-31"><a href="#cb10-31" tabindex="-1"></a>w_agg <span class="ot">&lt;-</span> <span class="fu">weight_by_volatility</span>(</span>
+<span id="cb10-32"><a href="#cb10-32" tabindex="-1"></a>  <span class="at">selected_df =</span> sel,</span>
+<span id="cb10-33"><a href="#cb10-33" tabindex="-1"></a>  <span class="at">vol_timeframe_data =</span> trading_daily,</span>
+<span id="cb10-34"><a href="#cb10-34" tabindex="-1"></a>  <span class="at">strategy_timeframe_data =</span> trading_prices,</span>
+<span id="cb10-35"><a href="#cb10-35" tabindex="-1"></a>  <span class="at">lookback_periods =</span> <span class="dv">20</span>,</span>
+<span id="cb10-36"><a href="#cb10-36" tabindex="-1"></a>  <span class="at">low_vol_preference =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb10-37"><a href="#cb10-37" tabindex="-1"></a>  <span class="at">vol_method =</span> <span class="st">&quot;std&quot;</span></span>
+<span id="cb10-38"><a href="#cb10-38" tabindex="-1"></a>)</span>
+<span id="cb10-39"><a href="#cb10-39" tabindex="-1"></a></span>
+<span id="cb10-40"><a href="#cb10-40" tabindex="-1"></a><span class="co"># Switch weights by regime (defensive when high-vol is TRUE)</span></span>
+<span id="cb10-41"><a href="#cb10-41" tabindex="-1"></a>weights4 <span class="ot">&lt;-</span> <span class="fu">switch_weights</span>(</span>
+<span id="cb10-42"><a href="#cb10-42" tabindex="-1"></a>  <span class="at">weights_a =</span> w_agg,  <span class="co"># used when condition is FALSE (low vol)</span></span>
+<span id="cb10-43"><a href="#cb10-43" tabindex="-1"></a>  <span class="at">weights_b =</span> w_def,  <span class="co"># used when condition is TRUE  (high vol)</span></span>
+<span id="cb10-44"><a href="#cb10-44" tabindex="-1"></a>  <span class="at">use_b_condition =</span> high_vol</span>
+<span id="cb10-45"><a href="#cb10-45" tabindex="-1"></a>)</span>
+<span id="cb10-46"><a href="#cb10-46" tabindex="-1"></a></span>
+<span id="cb10-47"><a href="#cb10-47" tabindex="-1"></a>result4 <span class="ot">&lt;-</span> <span class="fu">run_backtest</span>(</span>
+<span id="cb10-48"><a href="#cb10-48" tabindex="-1"></a>  <span class="at">prices =</span> trading_prices,</span>
+<span id="cb10-49"><a href="#cb10-49" tabindex="-1"></a>  <span class="at">weights =</span> weights4,</span>
+<span id="cb10-50"><a href="#cb10-50" tabindex="-1"></a>  <span class="at">initial_capital =</span> <span class="dv">100000</span>,</span>
+<span id="cb10-51"><a href="#cb10-51" tabindex="-1"></a>  <span class="at">name =</span> <span class="st">&quot;Regime-Adaptive Strategy&quot;</span></span>
+<span id="cb10-52"><a href="#cb10-52" tabindex="-1"></a>)</span>
+<span id="cb10-53"><a href="#cb10-53" tabindex="-1"></a></span>
+<span id="cb10-54"><a href="#cb10-54" tabindex="-1"></a><span class="fu">print</span>(result4)</span>
+<span id="cb10-55"><a href="#cb10-55" tabindex="-1"></a><span class="co">#&gt; Backtest Result:  Regime-Adaptive Strategy </span></span>
+<span id="cb10-56"><a href="#cb10-56" tabindex="-1"></a><span class="co">#&gt; =====================================</span></span>
+<span id="cb10-57"><a href="#cb10-57" tabindex="-1"></a><span class="co">#&gt; Warmup Period: 4 observations (no trading)</span></span>
+<span id="cb10-58"><a href="#cb10-58" tabindex="-1"></a><span class="co">#&gt; Active Period: 2017-02-03 to 2019-12-31 (154 observations)</span></span>
+<span id="cb10-59"><a href="#cb10-59" tabindex="-1"></a><span class="co">#&gt; Initial Capital: $1e+05</span></span>
+<span id="cb10-60"><a href="#cb10-60" tabindex="-1"></a><span class="co">#&gt; Final Value: $144,325</span></span>
+<span id="cb10-61"><a href="#cb10-61" tabindex="-1"></a><span class="co">#&gt; Total Return (active period): 44.32%</span></span>
+<span id="cb10-62"><a href="#cb10-62" tabindex="-1"></a><span class="co">#&gt; Total Return (full period): 44.32%</span></span>
+<span id="cb10-63"><a href="#cb10-63" tabindex="-1"></a><span class="co">#&gt; Transactions: 2273</span></span>
+<span id="cb10-64"><a href="#cb10-64" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb10-65"><a href="#cb10-65" tabindex="-1"></a><span class="co">#&gt; Annualized Return: 13.19%</span></span>
+<span id="cb10-66"><a href="#cb10-66" tabindex="-1"></a><span class="co">#&gt; Annualized Volatility: 12.91%</span></span>
+<span id="cb10-67"><a href="#cb10-67" tabindex="-1"></a><span class="co">#&gt; Sharpe Ratio: 1.02</span></span>
+<span id="cb10-68"><a href="#cb10-68" tabindex="-1"></a><span class="co">#&gt; Max Drawdown: -18.46%</span></span>
+<span id="cb10-69"><a href="#cb10-69" tabindex="-1"></a><span class="fu">summary</span>(result4)</span>
+<span id="cb10-70"><a href="#cb10-70" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb10-71"><a href="#cb10-71" tabindex="-1"></a><span class="co">#&gt; Detailed Summary:  Regime-Adaptive Strategy </span></span>
+<span id="cb10-72"><a href="#cb10-72" tabindex="-1"></a><span class="co">#&gt; =====================================</span></span>
+<span id="cb10-73"><a href="#cb10-73" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb10-74"><a href="#cb10-74" tabindex="-1"></a><span class="co">#&gt; Position Statistics:</span></span>
+<span id="cb10-75"><a href="#cb10-75" tabindex="-1"></a><span class="co">#&gt;   Average positions held: 14.6</span></span>
+<span id="cb10-76"><a href="#cb10-76" tabindex="-1"></a><span class="co">#&gt;   Max positions held: 15</span></span>
+<span id="cb10-77"><a href="#cb10-77" tabindex="-1"></a><span class="co">#&gt;   Periods fully invested: 130 (82.3%)</span></span>
+<span id="cb10-78"><a href="#cb10-78" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb10-79"><a href="#cb10-79" tabindex="-1"></a><span class="co">#&gt; Transaction Summary:</span></span>
+<span id="cb10-80"><a href="#cb10-80" tabindex="-1"></a><span class="co">#&gt;   Total trades: 2273</span></span>
+<span id="cb10-81"><a href="#cb10-81" tabindex="-1"></a><span class="co">#&gt;   Avg trades per period: 14.4</span></span>
+<span id="cb10-82"><a href="#cb10-82" tabindex="-1"></a><span class="co">#&gt;   Annual turnover: 940.3%</span></span>
+<span id="cb10-83"><a href="#cb10-83" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb10-84"><a href="#cb10-84" tabindex="-1"></a><span class="co">#&gt; Return Distribution:</span></span>
+<span id="cb10-85"><a href="#cb10-85" tabindex="-1"></a><span class="co">#&gt;   Mean return: 0.248%</span></span>
+<span id="cb10-86"><a href="#cb10-86" tabindex="-1"></a><span class="co">#&gt;   Median return: 0.404%</span></span>
+<span id="cb10-87"><a href="#cb10-87" tabindex="-1"></a><span class="co">#&gt;   Best period: 4.41%</span></span>
+<span id="cb10-88"><a href="#cb10-88" tabindex="-1"></a><span class="co">#&gt;   Worst period: -5.85%</span></span>
+<span id="cb10-89"><a href="#cb10-89" tabindex="-1"></a><span class="co">#&gt;   Positive periods: 92 (58.2%)</span></span></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="fu">plot</span>(result4, <span class="at">type =</span> <span class="st">&quot;performance&quot;</span>)</span></code></pre></div>
+<p><img role="img" src="data:image/png;base64,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" /><!-- --></p>
+</div>
+<div id="strategy-5-multi-factor-with-position-limits-advanced" class="section level2">
+<h2>Strategy 5: Multi-Factor with Position Limits (Advanced)</h2>
+<p>Combine <strong>momentum</strong> and <strong>stability</strong>
+signals, then enforce a <strong>max positions</strong> limit to control
+concentration. Weight 70% by momentum strength and 30% by stability.</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a><span class="co"># Signals</span></span>
+<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a>momentum <span class="ot">&lt;-</span> <span class="fu">calc_momentum</span>(sample_prices_weekly, <span class="at">lookback =</span> <span class="dv">12</span>)</span>
+<span id="cb12-3"><a href="#cb12-3" tabindex="-1"></a>daily_vol <span class="ot">&lt;-</span> <span class="fu">calc_rolling_volatility</span>(sample_prices_daily, <span class="at">lookback =</span> <span class="dv">20</span>)</span>
+<span id="cb12-4"><a href="#cb12-4" tabindex="-1"></a>weekly_vol <span class="ot">&lt;-</span> <span class="fu">align_to_timeframe</span>(daily_vol, sample_prices_weekly<span class="sc">$</span>Date, <span class="at">method =</span> <span class="st">&quot;forward_fill&quot;</span>)</span>
+<span id="cb12-5"><a href="#cb12-5" tabindex="-1"></a>stability <span class="ot">&lt;-</span> <span class="fu">invert_signal</span>(weekly_vol)</span>
+<span id="cb12-6"><a href="#cb12-6" tabindex="-1"></a></span>
+<span id="cb12-7"><a href="#cb12-7" tabindex="-1"></a><span class="co"># Selection &amp; position cap</span></span>
+<span id="cb12-8"><a href="#cb12-8" tabindex="-1"></a>top30 <span class="ot">&lt;-</span> <span class="fu">filter_top_n</span>(momentum, <span class="at">n =</span> <span class="dv">30</span>)</span>
+<span id="cb12-9"><a href="#cb12-9" tabindex="-1"></a>sel15 <span class="ot">&lt;-</span> <span class="fu">limit_positions</span>(top30, momentum, <span class="at">max_positions =</span> <span class="dv">15</span>)</span>
+<span id="cb12-10"><a href="#cb12-10" tabindex="-1"></a></span>
+<span id="cb12-11"><a href="#cb12-11" tabindex="-1"></a><span class="co"># Weights and blend (70/30)</span></span>
+<span id="cb12-12"><a href="#cb12-12" tabindex="-1"></a>w_m <span class="ot">&lt;-</span> <span class="fu">weight_by_signal</span>(sel15, momentum)</span>
+<span id="cb12-13"><a href="#cb12-13" tabindex="-1"></a>w_s <span class="ot">&lt;-</span> <span class="fu">weight_by_signal</span>(sel15, stability)</span>
+<span id="cb12-14"><a href="#cb12-14" tabindex="-1"></a>weights5 <span class="ot">&lt;-</span> <span class="fu">combine_weights</span>(<span class="fu">list</span>(w_m, w_s), <span class="at">weights =</span> <span class="fu">c</span>(<span class="fl">0.7</span>, <span class="fl">0.3</span>))</span>
+<span id="cb12-15"><a href="#cb12-15" tabindex="-1"></a></span>
+<span id="cb12-16"><a href="#cb12-16" tabindex="-1"></a><span class="co"># Backtest</span></span>
+<span id="cb12-17"><a href="#cb12-17" tabindex="-1"></a>result5 <span class="ot">&lt;-</span> <span class="fu">run_backtest</span>(</span>
+<span id="cb12-18"><a href="#cb12-18" tabindex="-1"></a>  <span class="at">prices =</span> sample_prices_weekly,</span>
+<span id="cb12-19"><a href="#cb12-19" tabindex="-1"></a>  <span class="at">weights =</span> weights5,</span>
+<span id="cb12-20"><a href="#cb12-20" tabindex="-1"></a>  <span class="at">initial_capital =</span> <span class="dv">100000</span>,</span>
+<span id="cb12-21"><a href="#cb12-21" tabindex="-1"></a>  <span class="at">name =</span> <span class="st">&quot;Multi-Factor with Position Limits&quot;</span></span>
+<span id="cb12-22"><a href="#cb12-22" tabindex="-1"></a>)</span>
+<span id="cb12-23"><a href="#cb12-23" tabindex="-1"></a></span>
+<span id="cb12-24"><a href="#cb12-24" tabindex="-1"></a><span class="fu">print</span>(result5)</span>
+<span id="cb12-25"><a href="#cb12-25" tabindex="-1"></a><span class="co">#&gt; Backtest Result:  Multi-Factor with Position Limits </span></span>
+<span id="cb12-26"><a href="#cb12-26" tabindex="-1"></a><span class="co">#&gt; =====================================</span></span>
+<span id="cb12-27"><a href="#cb12-27" tabindex="-1"></a><span class="co">#&gt; Warmup Period: 4 observations (no trading)</span></span>
+<span id="cb12-28"><a href="#cb12-28" tabindex="-1"></a><span class="co">#&gt; Active Period: 2017-02-03 to 2019-12-31 (154 observations)</span></span>
+<span id="cb12-29"><a href="#cb12-29" tabindex="-1"></a><span class="co">#&gt; Initial Capital: $1e+05</span></span>
+<span id="cb12-30"><a href="#cb12-30" tabindex="-1"></a><span class="co">#&gt; Final Value: $163,629</span></span>
+<span id="cb12-31"><a href="#cb12-31" tabindex="-1"></a><span class="co">#&gt; Total Return (active period): 63.63%</span></span>
+<span id="cb12-32"><a href="#cb12-32" tabindex="-1"></a><span class="co">#&gt; Total Return (full period): 63.63%</span></span>
+<span id="cb12-33"><a href="#cb12-33" tabindex="-1"></a><span class="co">#&gt; Transactions: 2281</span></span>
+<span id="cb12-34"><a href="#cb12-34" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb12-35"><a href="#cb12-35" tabindex="-1"></a><span class="co">#&gt; Annualized Return: 18.09%</span></span>
+<span id="cb12-36"><a href="#cb12-36" tabindex="-1"></a><span class="co">#&gt; Annualized Volatility: 12.92%</span></span>
+<span id="cb12-37"><a href="#cb12-37" tabindex="-1"></a><span class="co">#&gt; Sharpe Ratio: 1.40</span></span>
+<span id="cb12-38"><a href="#cb12-38" tabindex="-1"></a><span class="co">#&gt; Max Drawdown: -13.56%</span></span>
+<span id="cb12-39"><a href="#cb12-39" tabindex="-1"></a><span class="fu">summary</span>(result5)</span>
+<span id="cb12-40"><a href="#cb12-40" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb12-41"><a href="#cb12-41" tabindex="-1"></a><span class="co">#&gt; Detailed Summary:  Multi-Factor with Position Limits </span></span>
+<span id="cb12-42"><a href="#cb12-42" tabindex="-1"></a><span class="co">#&gt; =====================================</span></span>
+<span id="cb12-43"><a href="#cb12-43" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb12-44"><a href="#cb12-44" tabindex="-1"></a><span class="co">#&gt; Position Statistics:</span></span>
+<span id="cb12-45"><a href="#cb12-45" tabindex="-1"></a><span class="co">#&gt;   Average positions held: 14.6</span></span>
+<span id="cb12-46"><a href="#cb12-46" tabindex="-1"></a><span class="co">#&gt;   Max positions held: 15</span></span>
+<span id="cb12-47"><a href="#cb12-47" tabindex="-1"></a><span class="co">#&gt;   Periods fully invested: 115 (72.8%)</span></span>
+<span id="cb12-48"><a href="#cb12-48" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb12-49"><a href="#cb12-49" tabindex="-1"></a><span class="co">#&gt; Transaction Summary:</span></span>
+<span id="cb12-50"><a href="#cb12-50" tabindex="-1"></a><span class="co">#&gt;   Total trades: 2281</span></span>
+<span id="cb12-51"><a href="#cb12-51" tabindex="-1"></a><span class="co">#&gt;   Avg trades per period: 14.4</span></span>
+<span id="cb12-52"><a href="#cb12-52" tabindex="-1"></a><span class="co">#&gt;   Annual turnover: 781.0%</span></span>
+<span id="cb12-53"><a href="#cb12-53" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb12-54"><a href="#cb12-54" tabindex="-1"></a><span class="co">#&gt; Return Distribution:</span></span>
+<span id="cb12-55"><a href="#cb12-55" tabindex="-1"></a><span class="co">#&gt;   Mean return: 0.328%</span></span>
+<span id="cb12-56"><a href="#cb12-56" tabindex="-1"></a><span class="co">#&gt;   Median return: 0.480%</span></span>
+<span id="cb12-57"><a href="#cb12-57" tabindex="-1"></a><span class="co">#&gt;   Best period: 5.34%</span></span>
+<span id="cb12-58"><a href="#cb12-58" tabindex="-1"></a><span class="co">#&gt;   Worst period: -6.19%</span></span>
+<span id="cb12-59"><a href="#cb12-59" tabindex="-1"></a><span class="co">#&gt;   Positive periods: 99 (62.7%)</span></span></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a><span class="fu">plot</span>(result5, <span class="at">type =</span> <span class="st">&quot;performance&quot;</span>)</span></code></pre></div>
+<p><img role="img" src="data:image/png;base64,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" /><!-- --></p>
+</div>
+<div id="key-concepts-recap" class="section level2">
+<h2>Key Concepts Recap</h2>
+<p><strong>The PortfolioTesteR Pattern</strong></p>
+<ol style="list-style-type: decimal">
+<li><strong>Calculate</strong> signals (momentum, volatility, etc.)</li>
+<li><strong>Filter</strong> the universe (top-N, thresholds, logical
+combinations)</li>
+<li><strong>Weight</strong> the portfolio (equally, by signal, by
+volatility, etc.)</li>
+<li><strong>Backtest</strong> the strategy</li>
+<li><strong>Analyze</strong> with built-in metrics and
+visualizations</li>
+</ol>
+<p><strong>Function Families</strong></p>
+<ul>
+<li><strong>Indicators</strong>: <code>calc_momentum()</code>,
+<code>calc_rsi()</code>, <code>calc_rolling_volatility()</code>,
+<code>calc_moving_average()</code></li>
+<li><strong>Selection</strong>: <code>filter_top_n()</code>,
+<code>filter_above()</code>, <code>filter_between()</code>,
+<code>combine_filters()</code></li>
+<li><strong>Weighting</strong>: <code>weight_equally()</code>,
+<code>weight_by_signal()</code>, <code>weight_by_rank()</code>,
+<code>weight_by_volatility()</code>, <code>combine_weights()</code></li>
+<li><strong>Execution</strong>: <code>run_backtest()</code></li>
+<li><strong>Utilities</strong>: <code>align_to_timeframe()</code>,
+<code>invert_signal()</code>, <code>limit_positions()</code>,
+<code>switch_weights()</code></li>
+<li><strong>Analysis</strong>: <code>analyze_performance()</code>,
+<code>summary()</code>, <code>plot()</code></li>
+</ul>
+</div>
+<div id="getting-help" class="section level2">
+<h2>Getting Help</h2>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a>?run_backtest</span>
+<span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a>?calc_momentum</span>
+<span id="cb14-3"><a href="#cb14-3" tabindex="-1"></a>?filter_top_n</span>
+<span id="cb14-4"><a href="#cb14-4" tabindex="-1"></a>?analyze_performance</span></code></pre></div>
+</div>
+<div id="citation" class="section level2">
+<h2>Citation</h2>
+<p>If you use PortfolioTesteR in your research, please cite:</p>
+<blockquote>
+<p>Pallotta, A. (2025). <em>PortfolioTesteR: Test Investment Strategies
+with English-Like Code.</em> R package version 0.1.0. <a href="https://github.com/alb3rtazzo/PortfolioTesteR" class="uri">https://github.com/alb3rtazzo/PortfolioTesteR</a></p>
+</blockquote>
+</div>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
