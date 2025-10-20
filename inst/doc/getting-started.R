@@ -51,7 +51,7 @@ data(sample_prices_daily)
 # A) Momentum (12-week)
 momentum <- calc_momentum(sample_prices_weekly, lookback = 12)
 
-# B) Daily volatility → align weekly → invert (low vol = high score)
+# B) Daily volatility -> align weekly -> invert (low vol = high score)
 daily_vol <- calc_rolling_volatility(sample_prices_daily, lookback = 20)
 weekly_vol <- align_to_timeframe(
   high_freq_data = daily_vol,

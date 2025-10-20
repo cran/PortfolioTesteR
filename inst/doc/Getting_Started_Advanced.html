@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>ML Strategies with PortfolioTesteR (Advanced Getting Started)</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">ML Strategies with PortfolioTesteR
+(Advanced Getting Started)</h1>
+
+
+
+<p>% % %</p>
+<div id="why-ml-in-portfoliotester" class="section level1">
+<h1>Why ML in <em>PortfolioTesteR</em></h1>
+<p>PortfolioTesteR lets you test <strong>ML-based stock
+selection</strong> with the same workflow you already know:</p>
+<ol style="list-style-type: decimal">
+<li><strong>Prepare</strong> lagged, leakage-safe features + future
+labels<br />
+</li>
+<li><strong>Fit -&gt; Predict</strong> on a <strong>rolling IS/OOS
+schedule</strong><br />
+</li>
+<li><strong>Transform -&gt; Select -&gt; Weight</strong> the
+scores<br />
+</li>
+<li><strong>Backtest</strong> and <strong>inspect
+diagnostics</strong></li>
+</ol>
+<p>All examples use the bundled weekly/daily datasets; no internet is
+required.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">suppressPackageStartupMessages</span>(<span class="fu">library</span>(PortfolioTesteR))</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="fu">suppressPackageStartupMessages</span>(<span class="fu">library</span>(data.table))</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a><span class="co"># Bundled sample data</span></span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a><span class="fu">data</span>(sample_prices_weekly)</span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a><span class="fu">data</span>(sample_prices_daily)</span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a><span class="co"># Optional peek</span></span>
+<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a><span class="fu">head</span>(sample_prices_weekly[, <span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>])</span>
+<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a><span class="co">#&gt; Key: &lt;Date&gt;</span></span>
+<span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a><span class="co">#&gt;          Date     AAPL    AMZN       BA      BAC      CAT</span></span>
+<span id="cb1-12"><a href="#cb1-12" tabindex="-1"></a><span class="co">#&gt;        &lt;Date&gt;    &lt;num&gt;   &lt;num&gt;    &lt;num&gt;    &lt;num&gt;    &lt;num&gt;</span></span>
+<span id="cb1-13"><a href="#cb1-13" tabindex="-1"></a><span class="co">#&gt; 1: 2017-01-06 27.23376 39.7995 147.5085 18.70115 76.05074</span></span>
+<span id="cb1-14"><a href="#cb1-14" tabindex="-1"></a><span class="co">#&gt; 2: 2017-01-13 27.49475 40.8570 147.2582 18.97326 77.22778</span></span>
+<span id="cb1-15"><a href="#cb1-15" tabindex="-1"></a><span class="co">#&gt; 3: 2017-01-20 27.71648 40.4165 147.9072 18.66817 77.95100</span></span>
+<span id="cb1-16"><a href="#cb1-16" tabindex="-1"></a><span class="co">#&gt; 4: 2017-01-27 28.16688 41.7885 155.4819 19.26185 81.58563</span></span>
+<span id="cb1-17"><a href="#cb1-17" tabindex="-1"></a><span class="co">#&gt; 5: 2017-02-03 29.81370 40.5100 150.5680 19.20414 76.87957</span></span>
+<span id="cb1-18"><a href="#cb1-18" tabindex="-1"></a><span class="co">#&gt; 6: 2017-02-10 30.64816 41.3730 155.4447 19.03097 79.37682</span></span></code></pre></div>
+<hr />
+</div>
+<div id="baseline-ml-pooled-ridge-regression" class="section level1">
+<h1>1) Baseline ML (pooled): Ridge regression</h1>
+<p>Simple pooled regression on tabular features. The helpers build
+lagged features and future labels (4-week horizon).</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="co"># Prepare tabular features and labels</span></span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">ml_prepare_features</span>(sample_prices_weekly, sample_prices_daily)</span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>Y <span class="ot">&lt;-</span> <span class="fu">make_labels</span>(sample_prices_weekly, <span class="at">horizon =</span> <span class="dv">4</span><span class="dt">L</span>, <span class="at">type =</span> <span class="st">&quot;log&quot;</span>)</span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a><span class="co"># Linear/Ridge baseline</span></span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a>ridge <span class="ot">&lt;-</span> <span class="fu">ml_make_model</span>(<span class="st">&quot;ridge&quot;</span>)</span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
+<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a>res_baseline <span class="ot">&lt;-</span> <span class="fu">ml_backtest</span>(</span>
+<span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a>  <span class="at">features_list =</span> X, <span class="at">labels =</span> Y,</span>
+<span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a>  <span class="at">fit_fn  =</span> ridge<span class="sc">$</span>fit,</span>
+<span id="cb2-12"><a href="#cb2-12" tabindex="-1"></a>  <span class="at">predict_fn =</span> ridge<span class="sc">$</span>predict,</span>
+<span id="cb2-13"><a href="#cb2-13" tabindex="-1"></a>  <span class="at">schedule =</span> <span class="fu">list</span>(<span class="at">is =</span> <span class="dv">104</span><span class="dt">L</span>, <span class="at">oos =</span> <span class="dv">4</span><span class="dt">L</span>, <span class="at">step =</span> <span class="dv">4</span><span class="dt">L</span>),  <span class="co"># 2y IS, 1m OOS, monthly step</span></span>
+<span id="cb2-14"><a href="#cb2-14" tabindex="-1"></a>  <span class="at">transform =</span> <span class="st">&quot;zscore&quot;</span>,                              <span class="co"># IS-only scaling (no leakage)</span></span>
+<span id="cb2-15"><a href="#cb2-15" tabindex="-1"></a>  <span class="at">selection =</span> <span class="fu">list</span>(<span class="at">top_k =</span> <span class="dv">15</span><span class="dt">L</span>),</span>
+<span id="cb2-16"><a href="#cb2-16" tabindex="-1"></a>  <span class="at">weighting =</span> <span class="fu">list</span>(<span class="at">method =</span> <span class="st">&quot;rank&quot;</span>),</span>
+<span id="cb2-17"><a href="#cb2-17" tabindex="-1"></a>  <span class="at">prices =</span> sample_prices_weekly,</span>
+<span id="cb2-18"><a href="#cb2-18" tabindex="-1"></a>  <span class="at">initial_capital =</span> <span class="fl">1e5</span>,</span>
+<span id="cb2-19"><a href="#cb2-19" tabindex="-1"></a>  <span class="at">name =</span> <span class="st">&quot;Baseline Ridge (pooled)&quot;</span></span>
+<span id="cb2-20"><a href="#cb2-20" tabindex="-1"></a>)</span>
+<span id="cb2-21"><a href="#cb2-21" tabindex="-1"></a></span>
+<span id="cb2-22"><a href="#cb2-22" tabindex="-1"></a><span class="fu">print</span>(res_baseline<span class="sc">$</span>backtest)</span>
+<span id="cb2-23"><a href="#cb2-23" tabindex="-1"></a><span class="co">#&gt; Backtest Result:  Baseline Ridge (pooled) </span></span>
+<span id="cb2-24"><a href="#cb2-24" tabindex="-1"></a><span class="co">#&gt; =====================================</span></span>
+<span id="cb2-25"><a href="#cb2-25" tabindex="-1"></a><span class="co">#&gt; Warmup Period: 104 observations (no trading)</span></span>
+<span id="cb2-26"><a href="#cb2-26" tabindex="-1"></a><span class="co">#&gt; Active Period: 2018-12-31 to 2019-12-31 (54 observations)</span></span>
+<span id="cb2-27"><a href="#cb2-27" tabindex="-1"></a><span class="co">#&gt; Initial Capital: $1e+05</span></span>
+<span id="cb2-28"><a href="#cb2-28" tabindex="-1"></a><span class="co">#&gt; Final Value: $135,743</span></span>
+<span id="cb2-29"><a href="#cb2-29" tabindex="-1"></a><span class="co">#&gt; Total Return (active period): 35.74%</span></span>
+<span id="cb2-30"><a href="#cb2-30" tabindex="-1"></a><span class="co">#&gt; Total Return (full period): 35.74%</span></span>
+<span id="cb2-31"><a href="#cb2-31" tabindex="-1"></a><span class="co">#&gt; Transactions: 784</span></span>
+<span id="cb2-32"><a href="#cb2-32" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb2-33"><a href="#cb2-33" tabindex="-1"></a><span class="co">#&gt; Annualized Return: 34.22%</span></span>
+<span id="cb2-34"><a href="#cb2-34" tabindex="-1"></a><span class="co">#&gt; Annualized Volatility: 11.74%</span></span>
+<span id="cb2-35"><a href="#cb2-35" tabindex="-1"></a><span class="co">#&gt; Sharpe Ratio: 2.91</span></span>
+<span id="cb2-36"><a href="#cb2-36" tabindex="-1"></a><span class="co">#&gt; Max Drawdown: -6.08%</span></span>
+<span id="cb2-37"><a href="#cb2-37" tabindex="-1"></a><span class="fu">plot</span>(res_baseline<span class="sc">$</span>backtest, <span class="at">type =</span> <span class="st">&quot;performance&quot;</span>)</span></code></pre></div>
+<p><img role="img" src="data:image/png;base64,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" /><!-- --></p>
+<hr />
+</div>
+<div id="ensemble-ridge-xgboost" class="section level1">
+<h1>2) Ensemble: Ridge + XGBoost</h1>
+<p>This section is <strong>optional</strong>. It runs only if at least
+one of <code>ranger</code>/<code>xgboost</code> is installed.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="co"># Start with ridge (always available)</span></span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>models <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="fu">ml_make_model</span>(<span class="st">&quot;ridge&quot;</span>))</span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a><span class="co"># Add RF only if ranger is installed</span></span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a><span class="cf">if</span> (has_rf) {</span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a>  models <span class="ot">&lt;-</span> <span class="fu">c</span>(models, <span class="fu">list</span>(<span class="fu">ml_make_model</span>(<span class="st">&quot;rf&quot;</span>, <span class="at">num.trees =</span> <span class="cf">if</span> (heavy) <span class="dv">400</span><span class="dt">L</span> <span class="cf">else</span> <span class="dv">200</span><span class="dt">L</span>, <span class="at">mtry =</span> <span class="dv">3</span><span class="dt">L</span>)))</span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a>}</span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a></span>
+<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a><span class="co"># Add XGBoost only if xgboost is installed</span></span>
+<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a><span class="cf">if</span> (has_xgb) {</span>
+<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a>  models <span class="ot">&lt;-</span> <span class="fu">c</span>(models, <span class="fu">list</span>(</span>
+<span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a>    <span class="fu">ml_make_model</span>(</span>
+<span id="cb3-13"><a href="#cb3-13" tabindex="-1"></a>      <span class="st">&quot;xgboost&quot;</span>,</span>
+<span id="cb3-14"><a href="#cb3-14" tabindex="-1"></a>      <span class="at">params  =</span> <span class="fu">list</span>(<span class="at">objective =</span> <span class="st">&quot;reg:squarederror&quot;</span>, <span class="at">max_depth =</span> <span class="dv">4</span><span class="dt">L</span>, <span class="at">eta =</span> <span class="fl">0.07</span>),</span>
+<span id="cb3-15"><a href="#cb3-15" tabindex="-1"></a>      <span class="at">nrounds =</span> <span class="cf">if</span> (heavy) <span class="dv">300</span><span class="dt">L</span> <span class="cf">else</span> <span class="dv">150</span><span class="dt">L</span></span>
+<span id="cb3-16"><a href="#cb3-16" tabindex="-1"></a>    )</span>
+<span id="cb3-17"><a href="#cb3-17" tabindex="-1"></a>  ))</span>
+<span id="cb3-18"><a href="#cb3-18" tabindex="-1"></a>}</span>
+<span id="cb3-19"><a href="#cb3-19" tabindex="-1"></a></span>
+<span id="cb3-20"><a href="#cb3-20" tabindex="-1"></a><span class="co"># Build the ensemble from whatever is available</span></span>
+<span id="cb3-21"><a href="#cb3-21" tabindex="-1"></a>ens <span class="ot">&lt;-</span> <span class="fu">do.call</span>(ml_make_ensemble, models)</span>
+<span id="cb3-22"><a href="#cb3-22" tabindex="-1"></a></span>
+<span id="cb3-23"><a href="#cb3-23" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2</span>)</span>
+<span id="cb3-24"><a href="#cb3-24" tabindex="-1"></a>res_ens <span class="ot">&lt;-</span> <span class="fu">ml_backtest</span>(</span>
+<span id="cb3-25"><a href="#cb3-25" tabindex="-1"></a>  <span class="at">features_list =</span> X, <span class="at">labels =</span> Y,</span>
+<span id="cb3-26"><a href="#cb3-26" tabindex="-1"></a>  <span class="at">fit_fn =</span> ens<span class="sc">$</span>fit, <span class="at">predict_fn =</span> ens<span class="sc">$</span>predict,</span>
+<span id="cb3-27"><a href="#cb3-27" tabindex="-1"></a>  <span class="at">schedule =</span> <span class="fu">list</span>(<span class="at">is =</span> <span class="dv">104</span><span class="dt">L</span>, <span class="at">oos =</span> <span class="dv">4</span><span class="dt">L</span>, <span class="at">step =</span> <span class="dv">4</span><span class="dt">L</span>),</span>
+<span id="cb3-28"><a href="#cb3-28" tabindex="-1"></a>  <span class="at">transform =</span> <span class="st">&quot;zscore&quot;</span>,</span>
+<span id="cb3-29"><a href="#cb3-29" tabindex="-1"></a>  <span class="at">selection =</span> <span class="fu">list</span>(<span class="at">top_k =</span> <span class="dv">15</span><span class="dt">L</span>),</span>
+<span id="cb3-30"><a href="#cb3-30" tabindex="-1"></a>  <span class="at">weighting =</span> <span class="fu">list</span>(<span class="at">method =</span> <span class="st">&quot;rank&quot;</span>),</span>
+<span id="cb3-31"><a href="#cb3-31" tabindex="-1"></a>  <span class="at">prices =</span> sample_prices_weekly,</span>
+<span id="cb3-32"><a href="#cb3-32" tabindex="-1"></a>  <span class="at">initial_capital =</span> <span class="fl">1e5</span>,</span>
+<span id="cb3-33"><a href="#cb3-33" tabindex="-1"></a>  <span class="at">name =</span> <span class="st">&quot;Ensemble (available learners)&quot;</span></span>
+<span id="cb3-34"><a href="#cb3-34" tabindex="-1"></a>)</span>
+<span id="cb3-35"><a href="#cb3-35" tabindex="-1"></a></span>
+<span id="cb3-36"><a href="#cb3-36" tabindex="-1"></a><span class="fu">print</span>(res_ens<span class="sc">$</span>backtest)</span>
+<span id="cb3-37"><a href="#cb3-37" tabindex="-1"></a><span class="co">#&gt; Backtest Result:  Ensemble (available learners) </span></span>
+<span id="cb3-38"><a href="#cb3-38" tabindex="-1"></a><span class="co">#&gt; =====================================</span></span>
+<span id="cb3-39"><a href="#cb3-39" tabindex="-1"></a><span class="co">#&gt; Warmup Period: 104 observations (no trading)</span></span>
+<span id="cb3-40"><a href="#cb3-40" tabindex="-1"></a><span class="co">#&gt; Active Period: 2018-12-31 to 2019-12-31 (54 observations)</span></span>
+<span id="cb3-41"><a href="#cb3-41" tabindex="-1"></a><span class="co">#&gt; Initial Capital: $1e+05</span></span>
+<span id="cb3-42"><a href="#cb3-42" tabindex="-1"></a><span class="co">#&gt; Final Value: $133,347</span></span>
+<span id="cb3-43"><a href="#cb3-43" tabindex="-1"></a><span class="co">#&gt; Total Return (active period): 33.35%</span></span>
+<span id="cb3-44"><a href="#cb3-44" tabindex="-1"></a><span class="co">#&gt; Total Return (full period): 33.35%</span></span>
+<span id="cb3-45"><a href="#cb3-45" tabindex="-1"></a><span class="co">#&gt; Transactions: 872</span></span>
+<span id="cb3-46"><a href="#cb3-46" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb3-47"><a href="#cb3-47" tabindex="-1"></a><span class="co">#&gt; Annualized Return: 31.93%</span></span>
+<span id="cb3-48"><a href="#cb3-48" tabindex="-1"></a><span class="co">#&gt; Annualized Volatility: 12.13%</span></span>
+<span id="cb3-49"><a href="#cb3-49" tabindex="-1"></a><span class="co">#&gt; Sharpe Ratio: 2.63</span></span>
+<span id="cb3-50"><a href="#cb3-50" tabindex="-1"></a><span class="co">#&gt; Max Drawdown: -7.33%</span></span>
+<span id="cb3-51"><a href="#cb3-51" tabindex="-1"></a><span class="fu">plot</span>(res_ens<span class="sc">$</span>backtest, <span class="at">type =</span> <span class="st">&quot;performance&quot;</span>)</span></code></pre></div>
+<div id="section" class="section level2">
+<h2><img role="img" src="data:image/png;base64,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" /><!-- --></h2>
+</div>
+</div>
+<div id="sector-neutral-modelling-tabular-xgboost-per-group" class="section level1">
+<h1>3) Sector-neutral modelling (tabular XGBoost, per-group)</h1>
+<p>This section is <strong>optional</strong> and runs only if
+<code>xgboost</code> is installed.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a>symbols <span class="ot">&lt;-</span> <span class="fu">setdiff</span>(<span class="fu">names</span>(sample_prices_weekly), <span class="st">&quot;Date&quot;</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>gmap    <span class="ot">&lt;-</span> <span class="fu">demo_sector_map</span>(symbols, <span class="at">n_groups =</span> <span class="dv">4</span><span class="dt">L</span>)  <span class="co"># demo mapping for the sample data</span></span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>xgb_g <span class="ot">&lt;-</span> <span class="fu">ml_make_model</span>(</span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a>  <span class="st">&quot;xgboost&quot;</span>,</span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a>  <span class="at">params  =</span> <span class="fu">list</span>(<span class="at">objective =</span> <span class="st">&quot;reg:squarederror&quot;</span>, <span class="at">max_depth =</span> <span class="dv">3</span><span class="dt">L</span>, <span class="at">eta =</span> <span class="fl">0.05</span>),</span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a>  <span class="at">nrounds =</span> <span class="cf">if</span> (heavy) <span class="dv">250</span><span class="dt">L</span> <span class="cf">else</span> <span class="dv">150</span><span class="dt">L</span></span>
+<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a>)</span>
+<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a></span>
+<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">3</span>)</span>
+<span id="cb4-11"><a href="#cb4-11" tabindex="-1"></a>res_xgb_sect <span class="ot">&lt;-</span> <span class="fu">ml_backtest</span>(</span>
+<span id="cb4-12"><a href="#cb4-12" tabindex="-1"></a>  <span class="at">features_list =</span> X, <span class="at">labels =</span> Y,</span>
+<span id="cb4-13"><a href="#cb4-13" tabindex="-1"></a>  <span class="at">fit_fn =</span> xgb_g<span class="sc">$</span>fit, <span class="at">predict_fn =</span> xgb_g<span class="sc">$</span>predict,</span>
+<span id="cb4-14"><a href="#cb4-14" tabindex="-1"></a>  <span class="at">schedule =</span> <span class="fu">list</span>(<span class="at">is =</span> <span class="dv">104</span><span class="dt">L</span>, <span class="at">oos =</span> <span class="dv">4</span><span class="dt">L</span>, <span class="at">step =</span> <span class="dv">4</span><span class="dt">L</span>),</span>
+<span id="cb4-15"><a href="#cb4-15" tabindex="-1"></a>  <span class="at">group =</span> <span class="st">&quot;per_group&quot;</span>, <span class="at">group_map =</span> gmap,   <span class="co"># sector-neutral training</span></span>
+<span id="cb4-16"><a href="#cb4-16" tabindex="-1"></a>  <span class="at">transform =</span> <span class="st">&quot;zscore&quot;</span>,</span>
+<span id="cb4-17"><a href="#cb4-17" tabindex="-1"></a>  <span class="at">selection =</span> <span class="fu">list</span>(<span class="at">top_k =</span> <span class="dv">15</span><span class="dt">L</span>),</span>
+<span id="cb4-18"><a href="#cb4-18" tabindex="-1"></a>  <span class="at">weighting =</span> <span class="fu">list</span>(<span class="at">method =</span> <span class="st">&quot;softmax&quot;</span>, <span class="at">temperature =</span> <span class="dv">12</span>),</span>
+<span id="cb4-19"><a href="#cb4-19" tabindex="-1"></a>  <span class="at">prices =</span> sample_prices_weekly,</span>
+<span id="cb4-20"><a href="#cb4-20" tabindex="-1"></a>  <span class="at">initial_capital =</span> <span class="fl">1e5</span>,</span>
+<span id="cb4-21"><a href="#cb4-21" tabindex="-1"></a>  <span class="at">name =</span> <span class="st">&quot;XGBoost (per-sector neutral)&quot;</span></span>
+<span id="cb4-22"><a href="#cb4-22" tabindex="-1"></a>)</span>
+<span id="cb4-23"><a href="#cb4-23" tabindex="-1"></a></span>
+<span id="cb4-24"><a href="#cb4-24" tabindex="-1"></a><span class="fu">print</span>(res_xgb_sect<span class="sc">$</span>backtest)</span>
+<span id="cb4-25"><a href="#cb4-25" tabindex="-1"></a><span class="co">#&gt; Backtest Result:  XGBoost (per-sector neutral) </span></span>
+<span id="cb4-26"><a href="#cb4-26" tabindex="-1"></a><span class="co">#&gt; =====================================</span></span>
+<span id="cb4-27"><a href="#cb4-27" tabindex="-1"></a><span class="co">#&gt; Warmup Period: 104 observations (no trading)</span></span>
+<span id="cb4-28"><a href="#cb4-28" tabindex="-1"></a><span class="co">#&gt; Active Period: 2018-12-31 to 2019-12-31 (54 observations)</span></span>
+<span id="cb4-29"><a href="#cb4-29" tabindex="-1"></a><span class="co">#&gt; Initial Capital: $1e+05</span></span>
+<span id="cb4-30"><a href="#cb4-30" tabindex="-1"></a><span class="co">#&gt; Final Value: $129,909</span></span>
+<span id="cb4-31"><a href="#cb4-31" tabindex="-1"></a><span class="co">#&gt; Total Return (active period): 29.91%</span></span>
+<span id="cb4-32"><a href="#cb4-32" tabindex="-1"></a><span class="co">#&gt; Total Return (full period): 29.91%</span></span>
+<span id="cb4-33"><a href="#cb4-33" tabindex="-1"></a><span class="co">#&gt; Transactions: 870</span></span>
+<span id="cb4-34"><a href="#cb4-34" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb4-35"><a href="#cb4-35" tabindex="-1"></a><span class="co">#&gt; Annualized Return: 28.66%</span></span>
+<span id="cb4-36"><a href="#cb4-36" tabindex="-1"></a><span class="co">#&gt; Annualized Volatility: 10.95%</span></span>
+<span id="cb4-37"><a href="#cb4-37" tabindex="-1"></a><span class="co">#&gt; Sharpe Ratio: 2.62</span></span>
+<span id="cb4-38"><a href="#cb4-38" tabindex="-1"></a><span class="co">#&gt; Max Drawdown: -6.74%</span></span>
+<span id="cb4-39"><a href="#cb4-39" tabindex="-1"></a><span class="fu">plot</span>(res_xgb_sect<span class="sc">$</span>backtest, <span class="at">type =</span> <span class="st">&quot;performance&quot;</span>)</span></code></pre></div>
+<p><img role="img" src="data:image/png;base64,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" /><!-- --></p>
+<hr />
+</div>
+<div id="sequence-model-gru-pooled-returns-pyramid" class="section level1">
+<h1>4) Sequence model (GRU, pooled): “returns pyramid”</h1>
+<p><strong>Optional</strong> and disabled by default. Enable locally by
+running <code>Sys.setenv(RUN_SEQ = &quot;true&quot;)</code> before knitting, and
+only if your installation supports sequence models.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="fu">tf_autograph_scope</span>()  <span class="co"># isolate TF Autograph cache to avoid detritus </span><span class="al">NOTE</span></span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a><span class="co"># Build a compact &#39;returns pyramid&#39; of momentum-like sequences (lagged)</span></span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>r1  <span class="ot">&lt;-</span> <span class="fu">panel_lag</span>(<span class="fu">calc_momentum</span>(sample_prices_weekly,  <span class="dv">1</span><span class="dt">L</span>), <span class="dv">1</span><span class="dt">L</span>)</span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a>r4  <span class="ot">&lt;-</span> <span class="fu">panel_lag</span>(<span class="fu">calc_momentum</span>(sample_prices_weekly,  <span class="dv">4</span><span class="dt">L</span>), <span class="dv">1</span><span class="dt">L</span>)</span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a>r12 <span class="ot">&lt;-</span> <span class="fu">panel_lag</span>(<span class="fu">calc_momentum</span>(sample_prices_weekly, <span class="dv">12</span><span class="dt">L</span>), <span class="dv">1</span><span class="dt">L</span>)</span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a></span>
+<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a>features_seq <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">r1 =</span> r1, <span class="at">r4 =</span> r4, <span class="at">r12 =</span> r12)</span>
+<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a>Y_seq <span class="ot">&lt;-</span> <span class="fu">make_labels</span>(sample_prices_weekly, <span class="at">horizon =</span> <span class="dv">4</span><span class="dt">L</span>, <span class="at">type =</span> <span class="st">&quot;log&quot;</span>)</span>
+<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a></span>
+<span id="cb5-11"><a href="#cb5-11" tabindex="-1"></a>units  <span class="ot">&lt;-</span> <span class="cf">if</span> (heavy) <span class="dv">32</span><span class="dt">L</span> <span class="cf">else</span> <span class="dv">8</span><span class="dt">L</span></span>
+<span id="cb5-12"><a href="#cb5-12" tabindex="-1"></a>epochs <span class="ot">&lt;-</span> <span class="cf">if</span> (heavy) <span class="dv">12</span><span class="dt">L</span> <span class="cf">else</span> <span class="dv">4</span><span class="dt">L</span></span>
+<span id="cb5-13"><a href="#cb5-13" tabindex="-1"></a></span>
+<span id="cb5-14"><a href="#cb5-14" tabindex="-1"></a>seq_gru <span class="ot">&lt;-</span> <span class="fu">ml_make_seq_model</span>(</span>
+<span id="cb5-15"><a href="#cb5-15" tabindex="-1"></a>  <span class="st">&quot;gru&quot;</span>,</span>
+<span id="cb5-16"><a href="#cb5-16" tabindex="-1"></a>  <span class="at">steps  =</span> <span class="dv">26</span><span class="dt">L</span>,</span>
+<span id="cb5-17"><a href="#cb5-17" tabindex="-1"></a>  <span class="at">units  =</span> units,</span>
+<span id="cb5-18"><a href="#cb5-18" tabindex="-1"></a>  <span class="at">epochs =</span> epochs,</span>
+<span id="cb5-19"><a href="#cb5-19" tabindex="-1"></a>  <span class="at">seed   =</span> <span class="dv">42</span><span class="dt">L</span></span>
+<span id="cb5-20"><a href="#cb5-20" tabindex="-1"></a>)</span>
+<span id="cb5-21"><a href="#cb5-21" tabindex="-1"></a></span>
+<span id="cb5-22"><a href="#cb5-22" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">42</span>)</span>
+<span id="cb5-23"><a href="#cb5-23" tabindex="-1"></a>res_seq_gru <span class="ot">&lt;-</span> <span class="fu">ml_backtest_seq</span>(</span>
+<span id="cb5-24"><a href="#cb5-24" tabindex="-1"></a>  <span class="at">features_list   =</span> features_seq,</span>
+<span id="cb5-25"><a href="#cb5-25" tabindex="-1"></a>  <span class="at">labels          =</span> Y_seq,</span>
+<span id="cb5-26"><a href="#cb5-26" tabindex="-1"></a>  <span class="at">steps           =</span> <span class="dv">26</span><span class="dt">L</span>,</span>
+<span id="cb5-27"><a href="#cb5-27" tabindex="-1"></a>  <span class="at">horizon         =</span> <span class="dv">4</span><span class="dt">L</span>,</span>
+<span id="cb5-28"><a href="#cb5-28" tabindex="-1"></a>  <span class="at">fit_fn          =</span> seq_gru<span class="sc">$</span>fit,</span>
+<span id="cb5-29"><a href="#cb5-29" tabindex="-1"></a>  <span class="at">predict_fn      =</span> seq_gru<span class="sc">$</span>predict,</span>
+<span id="cb5-30"><a href="#cb5-30" tabindex="-1"></a>  <span class="at">schedule        =</span> <span class="fu">list</span>(<span class="at">is =</span> <span class="dv">104</span><span class="dt">L</span>, <span class="at">oos =</span> <span class="dv">4</span><span class="dt">L</span>, <span class="at">step =</span> <span class="dv">4</span><span class="dt">L</span>),</span>
+<span id="cb5-31"><a href="#cb5-31" tabindex="-1"></a>  <span class="at">group           =</span> <span class="st">&quot;pooled&quot;</span>,</span>
+<span id="cb5-32"><a href="#cb5-32" tabindex="-1"></a>  <span class="at">normalize       =</span> <span class="st">&quot;zscore&quot;</span>,</span>
+<span id="cb5-33"><a href="#cb5-33" tabindex="-1"></a>  <span class="at">selection       =</span> <span class="fu">list</span>(<span class="at">top_k =</span> <span class="dv">10</span><span class="dt">L</span>),</span>
+<span id="cb5-34"><a href="#cb5-34" tabindex="-1"></a>  <span class="at">weighting       =</span> <span class="fu">list</span>(<span class="at">method =</span> <span class="st">&quot;softmax&quot;</span>, <span class="at">temperature =</span> <span class="dv">12</span>),</span>
+<span id="cb5-35"><a href="#cb5-35" tabindex="-1"></a>  <span class="at">prices          =</span> sample_prices_weekly,</span>
+<span id="cb5-36"><a href="#cb5-36" tabindex="-1"></a>  <span class="at">initial_capital =</span> <span class="fl">1e5</span>,</span>
+<span id="cb5-37"><a href="#cb5-37" tabindex="-1"></a>  <span class="at">name            =</span> <span class="st">&quot;Seq-GRU (pooled): returns pyramid (26x3)&quot;</span></span>
+<span id="cb5-38"><a href="#cb5-38" tabindex="-1"></a>)</span>
+<span id="cb5-39"><a href="#cb5-39" tabindex="-1"></a></span>
+<span id="cb5-40"><a href="#cb5-40" tabindex="-1"></a><span class="fu">print</span>(res_seq_gru<span class="sc">$</span>backtest)</span>
+<span id="cb5-41"><a href="#cb5-41" tabindex="-1"></a><span class="fu">plot</span>(res_seq_gru<span class="sc">$</span>backtest, <span class="at">type =</span> <span class="st">&quot;performance&quot;</span>)</span></code></pre></div>
+<hr />
+</div>
+<div id="sequence-model-gru-per-group-sector-neutral-sequences" class="section level1">
+<h1>5) Sequence model (GRU, per-group): sector-neutral sequences</h1>
+<p><strong>Optional</strong> and disabled by default. Enable with
+<code>RUN_SEQ=&quot;true&quot;</code>.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="fu">tf_autograph_scope</span>()  <span class="co"># isolate TF Autograph cache for this chunk too</span></span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>symbols <span class="ot">&lt;-</span> <span class="fu">setdiff</span>(<span class="fu">names</span>(sample_prices_weekly), <span class="st">&quot;Date&quot;</span>)</span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a>gmap    <span class="ot">&lt;-</span> <span class="fu">demo_sector_map</span>(symbols, <span class="at">n_groups =</span> <span class="dv">4</span><span class="dt">L</span>)</span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a></span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a>units_g  <span class="ot">&lt;-</span> <span class="cf">if</span> (heavy) <span class="dv">32</span><span class="dt">L</span> <span class="cf">else</span> <span class="dv">8</span><span class="dt">L</span></span>
+<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a>epochs_g <span class="ot">&lt;-</span> <span class="cf">if</span> (heavy) <span class="dv">12</span><span class="dt">L</span> <span class="cf">else</span> <span class="dv">4</span><span class="dt">L</span></span>
+<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a></span>
+<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a>seq_gru_g <span class="ot">&lt;-</span> <span class="fu">ml_make_seq_model</span>(</span>
+<span id="cb6-10"><a href="#cb6-10" tabindex="-1"></a>  <span class="st">&quot;gru&quot;</span>,</span>
+<span id="cb6-11"><a href="#cb6-11" tabindex="-1"></a>  <span class="at">steps  =</span> <span class="dv">26</span><span class="dt">L</span>,</span>
+<span id="cb6-12"><a href="#cb6-12" tabindex="-1"></a>  <span class="at">units  =</span> units_g,</span>
+<span id="cb6-13"><a href="#cb6-13" tabindex="-1"></a>  <span class="at">epochs =</span> epochs_g,</span>
+<span id="cb6-14"><a href="#cb6-14" tabindex="-1"></a>  <span class="at">seed   =</span> <span class="dv">123</span><span class="dt">L</span></span>
+<span id="cb6-15"><a href="#cb6-15" tabindex="-1"></a>)</span>
+<span id="cb6-16"><a href="#cb6-16" tabindex="-1"></a></span>
+<span id="cb6-17"><a href="#cb6-17" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb6-18"><a href="#cb6-18" tabindex="-1"></a>res_seq_gru_g <span class="ot">&lt;-</span> <span class="fu">ml_backtest_seq</span>(</span>
+<span id="cb6-19"><a href="#cb6-19" tabindex="-1"></a>  <span class="at">features_list   =</span> features_seq,</span>
+<span id="cb6-20"><a href="#cb6-20" tabindex="-1"></a>  <span class="at">labels          =</span> Y_seq,</span>
+<span id="cb6-21"><a href="#cb6-21" tabindex="-1"></a>  <span class="at">steps           =</span> <span class="dv">26</span><span class="dt">L</span>,</span>
+<span id="cb6-22"><a href="#cb6-22" tabindex="-1"></a>  <span class="at">horizon         =</span> <span class="dv">4</span><span class="dt">L</span>,</span>
+<span id="cb6-23"><a href="#cb6-23" tabindex="-1"></a>  <span class="at">fit_fn          =</span> seq_gru_g<span class="sc">$</span>fit,</span>
+<span id="cb6-24"><a href="#cb6-24" tabindex="-1"></a>  <span class="at">predict_fn      =</span> seq_gru_g<span class="sc">$</span>predict,</span>
+<span id="cb6-25"><a href="#cb6-25" tabindex="-1"></a>  <span class="at">schedule        =</span> <span class="fu">list</span>(<span class="at">is =</span> <span class="dv">104</span><span class="dt">L</span>, <span class="at">oos =</span> <span class="dv">4</span><span class="dt">L</span>, <span class="at">step =</span> <span class="dv">4</span><span class="dt">L</span>),</span>
+<span id="cb6-26"><a href="#cb6-26" tabindex="-1"></a>  <span class="at">group           =</span> <span class="st">&quot;per_group&quot;</span>, <span class="at">group_map =</span> gmap,</span>
+<span id="cb6-27"><a href="#cb6-27" tabindex="-1"></a>  <span class="at">normalize       =</span> <span class="st">&quot;zscore&quot;</span>,</span>
+<span id="cb6-28"><a href="#cb6-28" tabindex="-1"></a>  <span class="at">selection       =</span> <span class="fu">list</span>(<span class="at">top_k =</span> <span class="dv">10</span><span class="dt">L</span>),</span>
+<span id="cb6-29"><a href="#cb6-29" tabindex="-1"></a>  <span class="at">weighting       =</span> <span class="fu">list</span>(<span class="at">method =</span> <span class="st">&quot;softmax&quot;</span>, <span class="at">temperature =</span> <span class="dv">12</span>),</span>
+<span id="cb6-30"><a href="#cb6-30" tabindex="-1"></a>  <span class="at">prices          =</span> sample_prices_weekly,</span>
+<span id="cb6-31"><a href="#cb6-31" tabindex="-1"></a>  <span class="at">initial_capital =</span> <span class="fl">1e5</span>,</span>
+<span id="cb6-32"><a href="#cb6-32" tabindex="-1"></a>  <span class="at">name            =</span> <span class="st">&quot;Seq-GRU (per-sector neutral): returns pyramid (26x3)&quot;</span></span>
+<span id="cb6-33"><a href="#cb6-33" tabindex="-1"></a>)</span>
+<span id="cb6-34"><a href="#cb6-34" tabindex="-1"></a></span>
+<span id="cb6-35"><a href="#cb6-35" tabindex="-1"></a><span class="fu">print</span>(res_seq_gru_g<span class="sc">$</span>backtest)</span>
+<span id="cb6-36"><a href="#cb6-36" tabindex="-1"></a><span class="fu">plot</span>(res_seq_gru_g<span class="sc">$</span>backtest, <span class="at">type =</span> <span class="st">&quot;performance&quot;</span>)</span></code></pre></div>
+<hr />
+</div>
+<div id="light-tuning-top-k-and-softmax-temperature" class="section level1">
+<h1>6) Light tuning: Top-K and softmax temperature</h1>
+<p>Runs only off-CRAN (when <code>NOT_CRAN=true</code>).</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a>topk_vals <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">8</span><span class="dt">L</span>, <span class="dv">10</span><span class="dt">L</span>, <span class="dv">12</span><span class="dt">L</span>, <span class="dv">15</span><span class="dt">L</span>)</span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>temp_vals <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">8</span>, <span class="dv">12</span>, <span class="dv">16</span>)</span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a>score_tbl <span class="ot">&lt;-</span> <span class="fu">tune_ml_backtest</span>(</span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a>    <span class="at">features_list =</span> X, <span class="at">labels =</span> Y, <span class="at">prices =</span> sample_prices_weekly,</span>
+<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a>    <span class="at">fit_fn =</span> ridge<span class="sc">$</span>fit, <span class="at">predict_fn =</span> ridge<span class="sc">$</span>predict,</span>
+<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a>    <span class="at">schedule =</span> <span class="fu">list</span>(<span class="at">is =</span> <span class="dv">104</span><span class="dt">L</span>, <span class="at">oos =</span> <span class="dv">4</span><span class="dt">L</span>, <span class="at">step =</span> <span class="dv">4</span><span class="dt">L</span>),</span>
+<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a>    <span class="at">grid =</span> <span class="fu">list</span>(</span>
+<span id="cb7-9"><a href="#cb7-9" tabindex="-1"></a>        <span class="at">top_k =</span> topk_vals,</span>
+<span id="cb7-10"><a href="#cb7-10" tabindex="-1"></a>        <span class="at">temperature =</span> temp_vals,</span>
+<span id="cb7-11"><a href="#cb7-11" tabindex="-1"></a>        <span class="at">method =</span> <span class="st">&quot;softmax&quot;</span>,</span>
+<span id="cb7-12"><a href="#cb7-12" tabindex="-1"></a>        <span class="at">transform =</span> <span class="st">&quot;zscore&quot;</span></span>
+<span id="cb7-13"><a href="#cb7-13" tabindex="-1"></a>    )</span>
+<span id="cb7-14"><a href="#cb7-14" tabindex="-1"></a>)</span>
+<span id="cb7-15"><a href="#cb7-15" tabindex="-1"></a></span>
+<span id="cb7-16"><a href="#cb7-16" tabindex="-1"></a>score_tbl[<span class="fu">order</span>(<span class="sc">-</span>sharpe)][<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>]</span></code></pre></div>
+<hr />
+</div>
+<div id="recap-next-steps" class="section level1">
+<h1>Recap &amp; Next Steps</h1>
+<ul>
+<li>You saw <strong>pooled</strong> vs <strong>per-group
+(sector-neutral)</strong> training,<br />
+</li>
+<li><strong>Tabular</strong> vs <strong>sequence</strong> learners,
+and<br />
+</li>
+<li>A small <strong>tuning</strong> exercise reusing the same IS/OOS
+schedule.</li>
+</ul>
+<p><strong>Try next:</strong><br />
+1) Replace GRU with LSTM/CNN1D if available (still gated by
+<code>RUN_SEQ</code>).<br />
+2) Blend tabular and sequence scores (e.g., average ranks) before
+weighting.<br />
+3) Add exposure caps or per-sector position limits when selecting
+Top-K.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="fu">sessionInfo</span>()</span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a><span class="co">#&gt; R version 4.2.1 (2022-06-23 ucrt)</span></span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a><span class="co">#&gt; Platform: x86_64-w64-mingw32/x64 (64-bit)</span></span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a><span class="co">#&gt; Running under: Windows 10 x64 (build 26200)</span></span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a><span class="co">#&gt; Matrix products: default</span></span>
+<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb8-8"><a href="#cb8-8" tabindex="-1"></a><span class="co">#&gt; locale:</span></span>
+<span id="cb8-9"><a href="#cb8-9" tabindex="-1"></a><span class="co">#&gt; [1] LC_COLLATE=C                           </span></span>
+<span id="cb8-10"><a href="#cb8-10" tabindex="-1"></a><span class="co">#&gt; [2] LC_CTYPE=English_United Kingdom.utf8   </span></span>
+<span id="cb8-11"><a href="#cb8-11" tabindex="-1"></a><span class="co">#&gt; [3] LC_MONETARY=English_United Kingdom.utf8</span></span>
+<span id="cb8-12"><a href="#cb8-12" tabindex="-1"></a><span class="co">#&gt; [4] LC_NUMERIC=C                           </span></span>
+<span id="cb8-13"><a href="#cb8-13" tabindex="-1"></a><span class="co">#&gt; [5] LC_TIME=English_United Kingdom.utf8    </span></span>
+<span id="cb8-14"><a href="#cb8-14" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb8-15"><a href="#cb8-15" tabindex="-1"></a><span class="co">#&gt; attached base packages:</span></span>
+<span id="cb8-16"><a href="#cb8-16" tabindex="-1"></a><span class="co">#&gt; [1] stats     graphics  grDevices utils     datasets  methods   base     </span></span>
+<span id="cb8-17"><a href="#cb8-17" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb8-18"><a href="#cb8-18" tabindex="-1"></a><span class="co">#&gt; other attached packages:</span></span>
+<span id="cb8-19"><a href="#cb8-19" tabindex="-1"></a><span class="co">#&gt; [1] data.table_1.16.0     PortfolioTesteR_0.1.3</span></span>
+<span id="cb8-20"><a href="#cb8-20" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb8-21"><a href="#cb8-21" tabindex="-1"></a><span class="co">#&gt; loaded via a namespace (and not attached):</span></span>
+<span id="cb8-22"><a href="#cb8-22" tabindex="-1"></a><span class="co">#&gt;  [1] Rcpp_1.0.13       bslib_0.9.0       compiler_4.2.1    jquerylib_0.1.4  </span></span>
+<span id="cb8-23"><a href="#cb8-23" tabindex="-1"></a><span class="co">#&gt;  [5] iterators_1.0.14  tools_4.2.1       xts_0.14.1        digest_0.6.37    </span></span>
+<span id="cb8-24"><a href="#cb8-24" tabindex="-1"></a><span class="co">#&gt;  [9] jsonlite_2.0.0    evaluate_1.0.5    lifecycle_1.0.4   lattice_0.20-45  </span></span>
+<span id="cb8-25"><a href="#cb8-25" tabindex="-1"></a><span class="co">#&gt; [13] rlang_1.1.6       Matrix_1.6-5      foreach_1.5.2     cli_3.6.1        </span></span>
+<span id="cb8-26"><a href="#cb8-26" tabindex="-1"></a><span class="co">#&gt; [17] rstudioapi_0.17.1 curl_7.0.0        yaml_2.3.10       xfun_0.53        </span></span>
+<span id="cb8-27"><a href="#cb8-27" tabindex="-1"></a><span class="co">#&gt; [21] fastmap_1.2.0     ranger_0.16.0     knitr_1.50        sass_0.4.10      </span></span>
+<span id="cb8-28"><a href="#cb8-28" tabindex="-1"></a><span class="co">#&gt; [25] xgboost_1.7.11.1  grid_4.2.1        glmnet_4.1-10     R6_2.6.1         </span></span>
+<span id="cb8-29"><a href="#cb8-29" tabindex="-1"></a><span class="co">#&gt; [29] survival_3.3-1    rmarkdown_2.29    TTR_0.24.4        codetools_0.2-18 </span></span>
+<span id="cb8-30"><a href="#cb8-30" tabindex="-1"></a><span class="co">#&gt; [33] htmltools_0.5.8.1 splines_4.2.1     shape_1.4.6.1     cachem_1.1.0     </span></span>
+<span id="cb8-31"><a href="#cb8-31" tabindex="-1"></a><span class="co">#&gt; [37] zoo_1.8-12</span></span></code></pre></div>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

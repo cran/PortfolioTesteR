@@ -1,7 +1,7 @@
 Package: PortfolioTesteR
 Type: Package
 Title: Test Investment Strategies with English-Like Code
-Version: 0.1.2
+Version: 0.1.3
 Authors@R: 
     person("Alberto", "Pallotta",
            email = "pallottaalberto@gmail.com",
@@ -12,20 +12,20 @@ Description: Design, backtest, and analyze portfolio strategies using simple,
     inverse volatility, hierarchical risk parity), and a compact backtesting
     engine for portfolio returns, drawdowns, and summary metrics.
 License: MIT + file LICENSE
-URL: https://github.com/alb3rtazzo/PortfolioTesteR
-BugReports: https://github.com/alb3rtazzo/PortfolioTesteR/issues
+URL: https://github.com/AlbertoPallotta/PortfolioTesteR
+BugReports: https://github.com/AlbertoPallotta/PortfolioTesteR/issues
 Depends: R (>= 3.5.0)
 Imports: data.table, graphics, stats, TTR, utils, zoo
 Suggests: quantmod, RSQLite, rvest, knitr, rmarkdown, testthat (>=
-        3.0.0)
+        3.0.0), glmnet, ranger, xgboost, keras, tensorflow
 VignetteBuilder: knitr
 Encoding: UTF-8
-RoxygenNote: 7.3.2
+RoxygenNote: 7.3.3
 Config/testthat/edition: 3
 ByteCompile: true
 NeedsCompilation: no
-Packaged: 2025-09-29 23:23:37 UTC; alber
+Packaged: 2025-10-20 22:06:19 UTC; alber
 Author: Alberto Pallotta [aut, cre]
 Maintainer: Alberto Pallotta <pallottaalberto@gmail.com>
 Repository: CRAN
-Date/Publication: 2025-09-29 23:40:15 UTC
+Date/Publication: 2025-10-20 23:00:02 UTC

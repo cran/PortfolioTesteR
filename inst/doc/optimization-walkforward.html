@@ -341,6 +341,7 @@ PortfolioTesteR</h1>
 
 
 
+<p>% % %</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>knitr<span class="sc">::</span>opts_chunk<span class="sc">$</span><span class="fu">set</span>(<span class="at">collapse=</span><span class="cn">TRUE</span>, <span class="at">comment=</span><span class="st">&quot;#&gt;&quot;</span>, <span class="at">fig.width=</span><span class="dv">7</span>, <span class="at">fig.height=</span><span class="dv">5</span>, <span class="at">dpi=</span><span class="dv">96</span>, <span class="at">cache=</span><span class="cn">FALSE</span>, <span class="at">message=</span><span class="cn">FALSE</span>, <span class="at">warning=</span><span class="cn">FALSE</span>)</span>
 <span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
 <span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>heavy <span class="ot">&lt;-</span> <span class="fu">identical</span>(<span class="fu">Sys.getenv</span>(<span class="st">&quot;NOT_CRAN&quot;</span>), <span class="st">&quot;true&quot;</span>)</span>
@@ -407,7 +408,7 @@ PortfolioTesteR</h1>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="fu">sessionInfo</span>()</span></code></pre></div>
 <pre><code>## R version 4.2.1 (2022-06-23 ucrt)
 ## Platform: x86_64-w64-mingw32/x64 (64-bit)
-## Running under: Windows 10 x64 (build 26100)
+## Running under: Windows 10 x64 (build 26200)
 ## 
 ## Matrix products: default
 ## 
@@ -422,16 +423,19 @@ PortfolioTesteR</h1>
 ## [1] stats     graphics  grDevices utils     datasets  methods   base     
 ## 
 ## other attached packages:
-## [1] PortfolioTesteR_0.1.2
+## [1] data.table_1.16.0     PortfolioTesteR_0.1.3
 ## 
 ## loaded via a namespace (and not attached):
-##  [1] lattice_0.20-45   zoo_1.8-12        digest_0.6.37     grid_4.2.1       
-##  [5] R6_2.6.1          lifecycle_1.0.4   jsonlite_2.0.0    evaluate_1.0.5   
-##  [9] cachem_1.1.0      rlang_1.1.4       cli_3.6.1         curl_7.0.0       
-## [13] data.table_1.16.0 rstudioapi_0.17.1 TTR_0.24.4        jquerylib_0.1.4  
-## [17] bslib_0.9.0       xts_0.14.1        rmarkdown_2.29    tools_4.2.1      
-## [21] xfun_0.53         yaml_2.3.10       fastmap_1.2.0     compiler_4.2.1   
-## [25] htmltools_0.5.8.1 knitr_1.50        sass_0.4.10</code></pre>
+##  [1] Rcpp_1.0.13       bslib_0.9.0       compiler_4.2.1    jquerylib_0.1.4  
+##  [5] iterators_1.0.14  tools_4.2.1       xts_0.14.1        digest_0.6.37    
+##  [9] jsonlite_2.0.0    evaluate_1.0.5    lifecycle_1.0.4   lattice_0.20-45  
+## [13] rlang_1.1.6       Matrix_1.6-5      foreach_1.5.2     cli_3.6.1        
+## [17] rstudioapi_0.17.1 curl_7.0.0        yaml_2.3.10       xfun_0.53        
+## [21] fastmap_1.2.0     ranger_0.16.0     knitr_1.50        sass_0.4.10      
+## [25] xgboost_1.7.11.1  grid_4.2.1        glmnet_4.1-10     R6_2.6.1         
+## [29] survival_3.3-1    rmarkdown_2.29    TTR_0.24.4        codetools_0.2-18 
+## [33] htmltools_0.5.8.1 splines_4.2.1     shape_1.4.6.1     cachem_1.1.0     
+## [37] zoo_1.8-12</code></pre>
 
 
 

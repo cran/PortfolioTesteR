@@ -6,15 +6,13 @@
 \alias{PortfolioTesteR-package}
 \title{PortfolioTesteR: Test Investment Strategies with English-Like Code}
 \description{
-\if{html}{\figure{logo.png}{options: style='float: right' alt='logo' width='120'}}
-
 Design, backtest, and analyze portfolio strategies using simple, English-like function chains. Includes technical indicators, flexible stock selection, portfolio construction methods (equal weighting, signal weighting, inverse volatility, hierarchical risk parity), and a compact backtesting engine for portfolio returns, drawdowns, and summary metrics.
 }
 \seealso{
 Useful links:
 \itemize{
-  \item \url{https://github.com/alb3rtazzo/PortfolioTesteR}
-  \item Report bugs at \url{https://github.com/alb3rtazzo/PortfolioTesteR/issues}
+  \item \url{https://github.com/AlbertoPallotta/PortfolioTesteR}
+  \item Report bugs at \url{https://github.com/AlbertoPallotta/PortfolioTesteR/issues}
 }
 
 }

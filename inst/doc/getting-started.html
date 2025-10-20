@@ -340,6 +340,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 
 
+<p>% % %</p>
 <div id="portfoliotester-test-investment-strategies-with-english-like-code" class="section level1">
 <h1>PortfolioTesteR: Test Investment Strategies with English-Like
 Code</h1>
@@ -435,7 +436,7 @@ rank well on both, then combine weights.</p>
 <span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a><span class="co"># A) Momentum (12-week)</span></span>
 <span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a>momentum <span class="ot">&lt;-</span> <span class="fu">calc_momentum</span>(sample_prices_weekly, <span class="at">lookback =</span> <span class="dv">12</span>)</span>
 <span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a></span>
-<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a><span class="co"># B) Daily volatility → align weekly → invert (low vol = high score)</span></span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a><span class="co"># B) Daily volatility -&gt; align weekly -&gt; invert (low vol = high score)</span></span>
 <span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a>daily_vol <span class="ot">&lt;-</span> <span class="fu">calc_rolling_volatility</span>(sample_prices_daily, <span class="at">lookback =</span> <span class="dv">20</span>)</span>
 <span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a>weekly_vol <span class="ot">&lt;-</span> <span class="fu">align_to_timeframe</span>(</span>
 <span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a>  <span class="at">high_freq_data =</span> daily_vol,</span>
@@ -826,10 +827,10 @@ on the weekly grid (bundled datasets only; CRAN-friendly)</p>
 <div id="optional-live-data-via-yahoo-cran-safe" class="section level2">
 <h2>Optional: Live Data via Yahoo (CRAN-safe)</h2>
 <p>Below is a minimal example that fetches prices from Yahoo Finance and
-runs the same “calculate → filter → weight → backtest” pipeline. The
-code is <strong>disabled</strong> inside CRAN/devtools checks. To run it
-locally, set <code>Sys.setenv(RUN_LIVE = &quot;true&quot;)</code> before
-knitting.</p>
+runs the same “calculate -&gt; filter -&gt; weight -&gt; backtest”
+pipeline. The code is <strong>disabled</strong> inside CRAN/devtools
+checks. To run it locally, set
+<code>Sys.setenv(RUN_LIVE = &quot;true&quot;)</code> before knitting.</p>
 <div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a><span class="fu">library</span>(PortfolioTesteR)</span>
 <span id="cb16-2"><a href="#cb16-2" tabindex="-1"></a></span>
 <span id="cb16-3"><a href="#cb16-3" tabindex="-1"></a><span class="co"># Fetch weekly data for a small set of tickers</span></span>
@@ -898,7 +899,7 @@ visualizations</li>
 <p>If you use PortfolioTesteR in your research, please cite:</p>
 <blockquote>
 <p>Pallotta, A. (2025). <em>PortfolioTesteR: Test Investment Strategies
-with English-Like Code.</em> R package version 0.1.0. <a href="https://github.com/alb3rtazzo/PortfolioTesteR" class="uri">https://github.com/alb3rtazzo/PortfolioTesteR</a></p>
+with English-Like Code.</em> R package version 0.1.2. <a href="https://github.com/AlbertoPallotta/PortfolioTesteR" class="uri">https://github.com/AlbertoPallotta/PortfolioTesteR</a></p>
 </blockquote>
 </div>
 </div>

@@ -1,3 +1,4 @@
+
 # ---- Data & leakage control -------------------------------------------------
 utils::globalVariables(c("Date"))
 # Internal: rough memory estimate for seq designs (to avoid freezing RStudio)
@@ -14,7 +15,18 @@ utils::globalVariables(c("Date"))
 }
 
 #' Join multiple panels on intersecting dates (unique symbol names)
-#' @param panels list of wide panels `Date + symbols`.
+#'
+#' Align and join a list of wide panels on their common dates. Each input
+#' panel must have one \code{Date} column and a disjoint set of symbol columns.
+#'
+#' @details
+#' All panels are first aligned to the intersection of their \code{Date} values.
+#' Symbol names must be unique across panels; if the same symbol appears in
+#' multiple inputs, an error is raised.
+#'
+#' @param panels List of wide panels (\code{data.frame} or \code{data.table}), each with columns \code{Date} + symbols.
+#'
+#' @return A \code{data.table} with \code{Date} plus the union of all symbol columns, restricted to common dates.
 #' @export
 join_panels <- function(panels) {
   stopifnot(is.list(panels), length(panels) >= 1)
@@ -32,10 +44,20 @@ join_panels <- function(panels) {
   out
 }
 
-#' Lag all symbol columns by k
-#' @param df wide panel with `Date + symbols`.
-#' @param k integer lag.
+#' Lag each symbol column by k steps
+#'
+#' Given a wide panel with a `Date` column followed by symbol columns, returns
+#' the same shape with each symbol column lagged by `k` periods. The `Date`
+#' column is preserved; leading values introduced by the lag are `NA_real_`.
+#'
+#' @param df data.frame or data.table with columns `Date` then symbols.
+#' @param k Integer lag (>= 1).
+#'
+#' @return A `data.table` with the same columns as `df`, lagged by `k`.
 #' @export
+#' @examples
+#' x <- data.frame(Date = as.Date("2020-01-01") + 0:2, A = 1:3, B = 11:13)
+#' panel_lag(x, 1L)
 panel_lag <- function(df, k = 1L) {
   dt <- if (data.table::is.data.table(df)) data.table::copy(df) else data.table::as.data.table(df)
   if (!"Date" %in% names(dt)) stop("'df' must have a Date column")
@@ -51,10 +73,24 @@ panel_lag <- function(df, k = 1L) {
 }
 
 
-#' Make future-return labels aligned to decision date
-#' @param prices price panel.
-#' @param horizon forward steps for the label.
-#' @param type `"log"`, `"simple"`, `"sign"`.
+#' Make future-return labels aligned to the decision date
+#'
+#' Compute forward returns over a fixed horizon and align them to the decision date.
+#'
+#' @details
+#' For each date \eqn{t}, the label is computed from prices at \eqn{t} and \eqn{t + h}.
+#' \itemize{
+#'   \item \code{type = "simple"}: \eqn{p_{t+h}/p_t - 1}
+#'   \item \code{type = "log"}: \eqn{\log(p_{t+h}) - \log(p_t)}
+#'   \item \code{type = "sign"}: \code{sign(simple return)}
+#' }
+#' Trailing dates that do not have \code{horizon} steps ahead are set to \code{NA}.
+#'
+#' @param prices Wide price panel (\code{Date} + symbols).
+#' @param horizon Integer \code{>= 1}, number of forward steps for the label.
+#' @param type Character, one of \code{"log"}, \code{"simple"}, \code{"sign"}.
+#'
+#' @return A \code{data.table} with \code{Date} + symbols containing the labels.
 #' @export
 make_labels <- function(prices, horizon = 4L, type = c("log","simple","sign")) {
   type <- match.arg(type)
@@ -477,15 +513,25 @@ filter_by_metric <- function(metric_df, op = c("below","above","between"),
 
 
 
-# ==== ENSEMBLES =============================================================
-# ==== ENSEMBLES =============================================================
-
-#' Combine multiple score panels (mean/weighted/rank-average/trimmed)
-#' @param scores_list list of score panels.
-#' @param method combination method.
-#' @param scores_list List of wide score panels to combine.
-#' @param weights Optional numeric weights for method='weighted'.
-#' @param trim Trim fraction for method='trimmed_mean'.
+#' Combine multiple score panels (mean / weighted / rank-average / trimmed)
+#'
+#' Combine several wide score panels (`Date` + symbols) into a single panel
+#' by applying one of several aggregation methods.
+#'
+#' @details
+#' \itemize{
+#'   \item \code{method = "mean"}: simple column-wise mean across panels.
+#'   \item \code{method = "weighted"}: weighted mean; see \code{weights}.
+#'   \item \code{method = "rank_avg"}: average of within-date normalized ranks.
+#'   \item \code{method = "trimmed_mean"}: mean with \code{trim} fraction removed at both tails.
+#' }
+#'
+#' @param scores_list List of wide score panels to combine (each has columns \code{Date} + symbols).
+#' @param method Character, one of \code{"mean"}, \code{"weighted"}, \code{"rank_avg"}, \code{"trimmed_mean"}.
+#' @param weights Optional numeric vector of length equal to \code{length(scores_list)}; used only when \code{method = "weighted"}.
+#' @param trim Numeric in \code{[0, 0.5)}; fraction to trim from each tail for \code{method = "trimmed_mean"}.
+#'
+#' @return A \code{data.table} with columns \code{Date} + symbols, containing the combined scores.
 #' @export
 combine_scores <- function(scores_list,
                            method = c("mean","weighted","rank_avg","trimmed_mean"),
@@ -579,11 +625,25 @@ cap_turnover <- function(weights, max_turnover = 0.2) {
 
 
 
-
-#' Validate or synthesize a group map
-#' @param symbols character vector of symbols.
-#' @param group_map `data.frame(Symbol, Group)`.
+#' Validate a symbol-to-group mapping
+#'
+#' Normalizes and checks a symbol → group mapping for a given set of symbols.
+#' Accepts either a data.frame/data.table with columns `Symbol` and `Group`,
+#' or a named character vector `c(symbol = "group", ...)`.
+#' Errors if any requested symbol is missing or mapped more than once.
+#'
+#' @param symbols Character vector of symbols to validate/keep.
+#' @param group_map Data frame/data.table with columns `Symbol`,`Group`,
+#'   or a named character vector mapping `symbol -> group`.
+#'
+#' @return A two-column `data.frame` with columns `Symbol` and `Group`
+#'   (one row per symbol), sorted by `Symbol`.
 #' @export
+#' @examples
+#' validate_group_map(
+#'   c("A","B"),
+#'   data.frame(Symbol = c("A","B"), Group = c("G1","G1"))
+#' )
 validate_group_map <- function(symbols, group_map) {
   if (is.null(group_map)) stop("group_map is NULL")
   GM <- if (data.table::is.data.table(group_map)) data.table::copy(group_map) else data.table::as.data.table(group_map)
@@ -598,10 +658,35 @@ validate_group_map <- function(symbols, group_map) {
 
 
 
-
-#' Demo sector map for examples/tests
-#' @param symbols character vector.
-#' @param n_groups integer groups to assign.
+#' Demo sector (group) map for examples/tests
+#'
+#' @param symbols character vector of tickers.
+#' @param n_groups integer number of groups to assign (cycled).
+#' @return A data.table with columns `Symbol` and `Group` (title-case), for demo use.
+#'
+#' @examples
+#' # Minimal usage
+#' syms <- c("AAPL","MSFT","AMZN","XOM","JPM")
+#' gdf  <- demo_sector_map(syms, n_groups = 3L)  # columns: Symbol, Group
+#' print(gdf)
+#'
+#' # Use with cap_exposure(): convert to a named vector (names = symbols)
+#' gmap <- stats::setNames(gdf$Group, gdf$Symbol)
+#'
+#' data(sample_prices_weekly)
+#' mom12 <- calc_momentum(sample_prices_weekly, 12)
+#' sel10 <- filter_top_n(mom12, 10)
+#' w_eq  <- weight_equally(sel10)
+#'
+#' w_cap <- cap_exposure(
+#'   weights          = w_eq,
+#'   max_per_symbol   = 0.10,
+#'   group_map        = gmap,     # <- named vector, OK for current cap_exposure()
+#'   max_per_group    = 0.45,
+#'   renormalize_down = TRUE
+#' )
+#' head(w_cap)
+#'
 #' @export
 demo_sector_map <- function(symbols, n_groups = 2L) {
   groups <- paste0("G", seq_len(n_groups))
@@ -767,44 +852,65 @@ ml_backtest <- function(features_list,
   list(scores = S, mask = mask, weights = W, backtest = BT)
 }
 
-
-# -------------------------------------------------------------------
-# ADD IF MISSING: grouped top-k selector with per-group cap
-# -------------------------------------------------------------------
-#' Select top-K per date with group caps
-#' @param group_map data.frame with `Symbol, Group`.
-#' @param max_per_group integer; max picks per group per date.
-#' @inheritParams select_top_k_scores
+#' Select top-k symbols per group by score
+#'
+#' @description
+#' For each date, choose the top `k` symbols **within each group** based on a
+#' score panel. Returns a logical selection panel aligned to the input.
+#'
+#' @details
+#' \itemize{
+#'   \item Group membership comes from `group_map` (symbol -> group).
+#'   \item Selection is computed independently by group on each date.
+#'   \item Ties follow the ordering implied by `order(..., method = "radix")`.
+#' }
+#'
+#' @param scores Wide score panel (`Date` + symbols).
+#' @param k Positive integer: number of symbols to select per group.
+#' @param group_map Named character vector or 2-column data.frame
+#'   (`symbol`, `group`) mapping symbols to groups.
+#' @param max_per_group Integer cap per group (default `3L`).
+#'
+#' @return Logical selection panel (`Date` + symbols) where `TRUE` marks
+#'         selected symbols.
+#' @examples
+#' set.seed(42)
+#' scores <- data.frame(
+#'   Date = as.Date("2020-01-01") + 0:1,
+#'   A = runif(2), B = runif(2), C = runif(2), D = runif(2), E = runif(2), F = runif(2)
+#' )
+#' gmap <- data.frame(Symbol = c("A","B","C","D","E","F"),
+#'                    Group  = c("G1","G1","G2","G2","G3","G3"))
+#' sel <- select_top_k_scores_by_group(scores, k = 4, group_map = gmap, max_per_group = 2)
+#' head(sel)
 #' @export
 select_top_k_scores_by_group <- function(scores, k, group_map, max_per_group = 3L) {
   S <- if (data.table::is.data.table(scores)) data.table::copy(scores) else data.table::as.data.table(scores)
-  stopifnot(all(c("Symbol","Group") %in% names(group_map)))
-  gmap <- data.table::as.data.table(group_map)
-
   syms <- setdiff(names(S), "Date")
-  out  <- data.table::data.table(Date = S$Date)
+
+  # Normalize map: returns data.frame with columns Symbol, Group
+  GM <- validate_group_map(syms, group_map)
+  sym2grp <- setNames(GM$Group, GM$Symbol)
+  groups  <- unique(GM$Group)
+
+  out <- data.table::data.table(Date = S$Date)
   for (nm in syms) out[[nm]] <- FALSE
 
-  # build group lookup
-  sym2grp <- gmap$Group; names(sym2grp) <- gmap$Symbol
-
   for (r in seq_len(nrow(S))) {
-    v  <- as.numeric(S[r, ..syms]); names(v) <- syms
+    v  <- as.numeric(S[r, ..syms])
     ok <- which(is.finite(v))
     if (!length(ok)) next
 
-    ord <- order(v[ok], decreasing = TRUE, method = "radix")
+    ord <- ok[order(v[ok], decreasing = TRUE, method = "radix")]
     picked <- character(0)
-    grp_ct <- list()
+    grp_ct <- setNames(integer(length(groups)), groups)
 
-    for (j in ok[ord]) {
-      s   <- syms[j]
-      grp <- sym2grp[[s]]
-      if (is.null(grp)) next
-      cnt <- grp_ct[[grp]] %||% 0L
-      if (cnt < max_per_group) {
+    for (j in ord) {
+      s <- syms[j]; g <- sym2grp[[s]]
+      if (is.null(g) || is.na(g)) next
+      if (grp_ct[g] < max_per_group) {
         picked <- c(picked, s)
-        grp_ct[[grp]] <- cnt + 1L
+        grp_ct[g] <- grp_ct[g] + 1L
         if (length(picked) >= k) break
       }
     }
@@ -812,6 +918,7 @@ select_top_k_scores_by_group <- function(scores, k, group_map, max_per_group = 3
   }
   out
 }
+
 
 
 # ==== Score diagnostics (robust alignment) ===================================
@@ -951,9 +1058,19 @@ bucket_returns <- function(scores, labels, n_buckets = 10L, label_type = c("log"
   out
 }
 
-#' Rolling IC mean / sd / ICIR
-#' @param ic_dt output of [ic_series()].
-#' @param window rolling window length.
+#' Rolling IC mean, standard deviation, and ICIR
+#'
+#' Compute rolling information coefficient (IC) statistics from a per-date IC series.
+#'
+#' @details
+#' For each rolling window, compute the mean IC, the standard deviation of IC,
+#' and the information coefficient ratio (ICIR = mean / sd). Windows with fewer
+#' than two finite IC values yield \code{NA} for ICIR.
+#'
+#' @param ic_dt Data frame/data.table produced by \code{\link{ic_series}} with columns \code{Date} and \code{IC}.
+#' @param window Integer window length for the rolling statistics.
+#'
+#' @return A \code{data.table} with columns \code{Date}, \code{IC_mean}, \code{IC_sd}, and \code{ICIR}.
 #' @export
 roll_ic_stats <- function(ic_dt, window = 26L) {
   stopifnot(all(c("Date","IC") %in% names(ic_dt)))
@@ -966,41 +1083,6 @@ roll_ic_stats <- function(ic_dt, window = 26L) {
 
 
 # ==== Group-aware selection ===================================================
-
-# Select top-K by score with a per-group maximum number of names per date.
-# group_map: data.table/data.frame with columns Symbol, Group (one group per symbol).
-select_top_k_scores_by_group <- function(scores, k, group_map, max_per_group) {
-  S <- if (data.table::is.data.table(scores)) data.table::copy(scores) else data.table::as.data.table(scores)
-  syms <- setdiff(names(S), "Date")
-
-  GM <- validate_group_map(syms, group_map)
-  sym2grp <- setNames(GM$Group, GM$Symbol)
-  groups  <- unique(GM$Group)
-
-  out <- data.table::data.table(Date = S$Date)
-  for (nm in syms) out[[nm]] <- FALSE
-
-  for (r in seq_len(nrow(S))) {
-    v  <- as.numeric(S[r, ..syms]); ok <- which(is.finite(v))
-    if (!length(ok)) next
-    ord <- ok[order(v[ok], decreasing = TRUE, method = "radix")]
-
-    take <- character(0)
-    grp_ct <- setNames(integer(length(groups)), groups)
-
-    for (j in ord) {
-      s <- syms[j]
-      g <- sym2grp[[s]]
-      if (grp_ct[g] < max_per_group) {
-        take <- c(take, s)
-        grp_ct[g] <- grp_ct[g] + 1L
-        if (length(take) >= k) break
-      }
-    }
-    if (length(take)) for (s in take) out[[s]][r] <- TRUE
-  }
-  out
-}
 
 
 
@@ -1044,7 +1126,25 @@ carry_forward_weights <- function(weights) {
 
 
 # ==== RETURNS & PERFORMANCE ===================================================
-
+#' Panel simple returns from prices
+#'
+#' Converts a wide price panel (Date + symbols) into arithmetic simple returns
+#' at the same cadence, dropping the first row per symbol.
+#'
+#' @param prices A data frame or data.table with columns \code{Date} and one column
+#'   per symbol containing adjusted prices at a common frequency (daily, weekly, monthly).
+#'
+#' @return A data frame with \code{Date} and one column per symbol containing simple returns
+#'   \eqn{R_{t} = P_{t}/P_{t-1} - 1}.
+#'
+#' @examples
+#' \donttest{
+#'   data(sample_prices_weekly)
+#'   rets <- panel_returns_simple(sample_prices_weekly)
+#'   head(rets)
+#' }
+#'
+#' @export
 panel_returns_simple <- function(prices) {
   DT <- if (data.table::is.data.table(prices)) data.table::copy(prices) else data.table::as.data.table(prices)
   stopifnot("Date" %in% names(DT))
@@ -1056,49 +1156,118 @@ panel_returns_simple <- function(prices) {
   }
   R
 }
-
-# Portfolio returns using carried-forward weights; optional cost bps on rebalance days
+#' Portfolio returns from weights and prices (CASH-aware)
+#'
+#' Computes the portfolio simple return series by applying (lagged) portfolio
+#' weights to next-period asset returns, optionally net of proportional costs.
+#'
+#' **CASH support:** if `weights` contains a column named `"CASH"` (case-insensitive)
+#' but `prices` has no matching column, a synthetic flat price series is added
+#' internally (price = 1 \eqn{\Rightarrow}{=>} return = 0). In that case the function does **not**
+#' re-normalise the non-CASH weights; the row is treated as a complete budget
+#' (symbols + CASH = 1).
+#'
+#' @param weights A data.frame/data.table of portfolio weights on rebalance dates:
+#'   first column `Date`, remaining columns one per symbol (numeric weights).
+#'   Weights decided at \eqn{t-1} are applied to returns over \eqn{t}.
+#' @param prices A data.frame/data.table of adjusted prices at the same cadence:
+#'   first column `Date`, remaining columns one per symbol.
+#' @param cost_bps One-way proportional cost per side in basis points (e.g., `10`
+#'   for 10 bps). Default `0`. If `> 0` and your package exposes a turnover
+#'   helper, it will be used; otherwise costs are ignored with a warning.
+#'
+#' @return A `data.table` with columns `Date` and `ret` (portfolio simple return).
+#'
+#' @details
+#' The function carries forward the latest available weights to each return row
+#' via the usual one-period decision lag. Transaction cost handling is conservative:
+#' if a turnover helper is not available, costs are skipped.
+#'
+#' @examples
+#' \donttest{
+#'   data(sample_prices_weekly)
+#'   mom12 <- PortfolioTesteR::calc_momentum(sample_prices_weekly, 12)
+#'   sel10 <- PortfolioTesteR::filter_top_n(mom12, 10)
+#'   w_eq  <- PortfolioTesteR::weight_equally(sel10)
+#'
+#'   pr <- portfolio_returns(w_eq, sample_prices_weekly, cost_bps = 0)
+#'   head(pr)
+#' }
+#'
+#' @seealso PortfolioTesteR::panel_returns_simple
+#' @export
 portfolio_returns <- function(weights, prices, cost_bps = 0) {
-  W <- if (data.table::is.data.table(weights)) data.table::copy(weights) else data.table::as.data.table(weights)
-  P <- if (data.table::is.data.table(prices))  data.table::copy(prices)  else data.table::as.data.table(prices)
-  stopifnot("Date" %in% names(W), "Date" %in% names(P))
-  syms <- Reduce(intersect, list(setdiff(names(W), "Date"), setdiff(names(P), "Date")))
-  dates <- Reduce(intersect, list(W$Date, P$Date))
-  stopifnot(length(syms) > 0, length(dates) > 1)
+  stopifnot(is.data.frame(weights), is.data.frame(prices))
+  stopifnot("Date" %in% names(weights), "Date" %in% names(prices))
 
-  W <- W[Date %in% dates, c("Date", syms), with = FALSE]
-  P <- P[Date %in% dates, c("Date", syms), with = FALSE]
+  W <- data.table::as.data.table(data.table::copy(weights))
+  P <- data.table::as.data.table(data.table::copy(prices))
+  data.table::setkey(W, Date); data.table::setkey(P, Date)
 
-  R <- panel_returns_simple(P)
-  Wcf <- carry_forward_weights(W)  # you already have this helper
+  w_syms <- setdiff(names(W), "Date")
+  p_syms <- setdiff(names(P), "Date")
 
-  ret <- rep(NA_real_, nrow(R))
-  for (t in 2:nrow(R)) {
-    w_prev <- as.numeric(Wcf[t-1, ..syms])
-    r_t    <- as.numeric(R[t,    ..syms])
-    ok <- is.finite(w_prev) & is.finite(r_t)
-    if (any(ok)) ret[t] <- sum(w_prev[ok] * r_t[ok])
+  # Detect CASH (case-insensitive) in weights
+  cash_col <- w_syms[tolower(w_syms) == "cash"]
+  if (length(cash_col) > 1L) {
+    stop("portfolio_returns(): multiple CASH-like columns in weights.")
+  }
+  has_cash_in_w <- length(cash_col) == 1L
+
+  # If CASH present in weights but missing in prices, synthesize a flat price
+  if (has_cash_in_w && !(cash_col %in% p_syms)) {
+    P[, (cash_col) := 1]  # flat price \eqn{\Rightarrow}{=>} 0 simple return
+    p_syms <- c(p_syms, cash_col)
   }
 
-  # Transaction costs on rebalance rows (0.5 * L1 turnover * cost%)
-  if (cost_bps > 0) {
-    rc <- rebalance_calendar(W) # you already have this helper
-    if (nrow(rc)) {
-      for (k in seq_len(nrow(rc))) {
-        t <- rc$row[k]
-        if (t >= 2 && t <= length(ret)) {
-          w_prev <- as.numeric(Wcf[t-1, ..syms])
-          w_new  <- as.numeric(Wcf[t,   ..syms])
-          turn   <- 0.5 * sum(abs(w_new - w_prev), na.rm = TRUE)
-          cost   <- (cost_bps / 1e4) * turn
-          ret[t] <- ifelse(is.na(ret[t]), -cost, ret[t] - cost)
-        }
+  # Intersect symbols actually available in both
+  syms <- intersect(w_syms, p_syms)
+  if (!length(syms)) stop("portfolio_returns(): no overlapping symbols between weights and prices.")
+
+  # Asset simple returns (Date + syms)
+  R <- PortfolioTesteR::panel_returns_simple(P[, c("Date", syms), with = FALSE])
+
+  # Decision lag: weights at t-1 apply to returns at t
+  R2   <- R[-1]
+  Wlag <- W[-.N]
+  stopifnot(nrow(R2) == nrow(Wlag))
+
+  # Compute portfolio returns row-wise
+  Xw <- as.matrix(Wlag[, ..syms])
+  Xr <- as.matrix(R2[, ..syms])
+  pr <- rowSums(Xw * Xr, na.rm = TRUE)
+
+  # Optional transaction costs (best-effort; ignored if helper missing)
+  if (is.numeric(cost_bps) && isTRUE(cost_bps > 0)) {
+    add_costs <- FALSE
+    # Try to use a turnover helper if available (best-effort)
+    if (exists("turnover_by_date", where = asNamespace("PortfolioTesteR"), inherits = FALSE)) {
+      # Attempt a safe call; if it fails, skip costs with a warning
+      to_dt <- try(PortfolioTesteR::turnover_by_date(W, P), silent = TRUE)
+      if (!inherits(to_dt, "try-error") && is.data.frame(to_dt) && "turnover" %in% names(to_dt)) {
+        # One-way cost on gross turnover (common convention)
+        c_perc <- as.numeric(cost_bps) / 1e4
+        cost   <- c_perc * to_dt$turnover
+        cost   <- cost[seq_along(pr)]  # align length defensively
+        cost[!is.finite(cost)] <- 0
+        pr <- pr - cost
+        add_costs <- TRUE
       }
     }
+    if (!add_costs) {
+      warning("portfolio_returns(): cost_bps > 0 but no compatible turnover helper found; costs ignored.")
+    }
   }
-  data.table::data.table(Date = R$Date, ret = ret)
+
+  data.table::data.table(Date = R2$Date, ret = pr)[]
 }
 
+#' Portfolio performance metrics
+#'
+#' @param ret_dt data.table/data.frame with columns `Date` and `ret`.
+#' @param freq Integer periods-per-year for annualization (e.g., 52 or 252).
+#' @return list with `total_return`, `ann_return`, `ann_vol`, `sharpe`, `max_drawdown`.
+#' @export
 perf_metrics <- function(ret_dt, freq = 52) {
   stopifnot(all(c("Date","ret") %in% names(ret_dt)))
   r <- ret_dt$ret[is.finite(ret_dt$ret)]
@@ -1120,8 +1289,8 @@ perf_metrics <- function(ret_dt, freq = 52) {
        sharpe = sharpe, max_drawdown = max_dd)
 }
 
-# ==== SIMPLE PARAMETER GRID TUNER ============================================
 
+# ==== SIMPLE PARAMETER GRID TUNER ============================================
 
 #' Quick grid tuning for tabular pipeline
 #' @param grid list of vectors: `top_k`, `temperature`, `method`, `transform`.
@@ -1136,7 +1305,7 @@ perf_metrics <- function(ret_dt, freq = 52) {
 #' @param selection_defaults Default selection settings (e.g., top_k).
 #' @param weighting_defaults Default weighting settings (e.g., method, temperature).
 #' @param caps Exposure caps (e.g., max_per_symbol/max_per_group).
-#' @param group_map Optional Symbol→Group mapping.
+#' @param group_map Optional Symbol->Group mapping.
 #' @return data.table with metrics per grid row.
 #' @export
 tune_ml_backtest <- function(features_list, labels, prices,
@@ -1204,7 +1373,6 @@ tune_ml_backtest <- function(features_list, labels, prices,
 
   data.table::rbindlist(lapply(rows, data.table::as.data.table), fill = TRUE)[order(-sharpe)]
 }
-
 
 
 
@@ -1894,7 +2062,7 @@ cv_tune_seq <- function(features_list, labels,
 #' @param schedule List with elements is, oos, step.
 #' @param grid Named list of parameter vectors to sweep (e.g., top_k, temperature, method, transform).
 #' @param caps Exposure caps (e.g., max_per_symbol/max_per_group).
-#' @param group_map Optional Symbol→Group mapping for group caps/selection.
+#' @param group_map Optional Symbol->Group mapping for group caps/selection.
 #' @param freq Compounding frequency for annualization (e.g., 52 for weekly).
 #' @param cost_bps One-way trading cost in basis points (applied on rebalance).
 #' @param ic_method IC method ('spearman' or 'pearson').
@@ -2017,3 +2185,8 @@ wf_sweep_tabular <- function(features_list, labels, prices,
   data.table::setorder(out, -sharpe_med, -annret_med)
   out
 }
+
+
+
+
+
