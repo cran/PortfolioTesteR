@@ -1,7 +1,7 @@
-7142b52bbd7c94d04e8cd5b60de83856 *DESCRIPTION
+61f9a12d13999dc62acbb3ba8e4d8764 *DESCRIPTION
 a855c3ffaf8756099ef3b951dc7dc242 *LICENSE
-9a03ed0470204e69ad580c1f230ecd15 *NAMESPACE
-891da94618fd091113ba77873d9208da *NEWS.md
+0b83cdbb66825c613d3f1b4088f94e1a *NAMESPACE
+e417f783222e74c7054ee75ffbd55b30 *NEWS.md
 3817e6a7826e6c29467169d60ed12c43 *R/PortfolioTesteR-package.R
 ea347bba71baae537df099754bb06934 *R/backtesting.R
 cd57ce341b092a50f7a1b3562331f633 *R/cross_sectional.R
@@ -10,9 +10,9 @@ cd57ce341b092a50f7a1b3562331f633 *R/cross_sectional.R
 403b95ff7364622796558b6a042b08d7 *R/data_utilities.R
 cb0c126bd46cc7ec73815c43822be633 *R/examples_helpers.R
 2509dbcc7932a75dd46b42b9dca52941 *R/filters.R
-6ad72366704f5a5c0fe43acfc9ae57f0 *R/globals.R
+1fe677d1f97c3e5310ff90f0349cdab0 *R/globals.R
 be20f2721bb6676aa08540ea781923d2 *R/ml.R
-311de9f2cd0bf637c32c8169c65a3184 *R/ml_helper.R
+f5da28d2ba490fbffffcaab9132ff717 *R/ml_helper.R
 1298dce1b6d1e888a7c1c060cac55efe *R/optimization.R
 3a19ada4e6d3101e0084cc34efc9a103 *R/performance_analytics.R
 261c8269c9e1200a4da95e8fc690e212 *R/risk_analysis.R
@@ -26,14 +26,14 @@ a2a50b4b86a1fb6264d0243e0c809666 *build/vignette.rds
 994682a464bb45bf24656cb66b74a533 *data/sample_prices_weekly.rda
 bb128989cb7cc351ad38822cc70a99fa *data/sample_sp500_sectors.rda
 7dadea7e7b0958d8ac3e3f364047e3b0 *inst/doc/Getting_Started_Advanced.R
-153ee8758b2d3e60c7460cd99c21b51e *inst/doc/Getting_Started_Advanced.Rmd
-c275d916e9b81f392293eac1d8e3086a *inst/doc/Getting_Started_Advanced.html
+7ed11206932975c61afd1d2ffbbf5086 *inst/doc/Getting_Started_Advanced.Rmd
+bde6bd5de564c88d1d6270a2e179cfea *inst/doc/Getting_Started_Advanced.html
 8fd633517de69443700ce42192859008 *inst/doc/getting-started.R
-8a6f7e999025a8b7a14aa79b37650f5f *inst/doc/getting-started.Rmd
-9c39b94c62912e05007229c1ac341abe *inst/doc/getting-started.html
+0d2884d013fb35795194532248cd78c4 *inst/doc/getting-started.Rmd
+b02643001445ad95b124425ac6bb3dcc *inst/doc/getting-started.html
 9da4385526ea42243f1d47bf6fcbaa8e *inst/doc/optimization-walkforward.R
-344a8a5ba0c8fb5211287c4815e22dbb *inst/doc/optimization-walkforward.Rmd
-ca28190a7b25f1902657fe61c671296f *inst/doc/optimization-walkforward.html
+e2ba4b521cdfe24a60c8ed0fad153a0c *inst/doc/optimization-walkforward.Rmd
+6313faa4a42822ffe391f9511d850656 *inst/doc/optimization-walkforward.html
 aff332f369025995d2aa1e34e75d53dc *inst/examples/cap_exposure_caps.R
 47250db697298c733abac4871dee7a3e *inst/examples/demo_cci_breakout_biweekly_rank.R
 7b24a81f00c2a4c10ac558f238bd786c *inst/examples/demo_opt_basic.R
@@ -129,6 +129,7 @@ a6006abea0eca41bd080331b63a92f8b *man/load_mixed_symbols.Rd
 04ff90eeaa5976e9f6c930739b748df0 *man/metric_sharpe.Rd
 29ebb4a0f2cb1f4ca76a6d017dfb26a6 *man/ml_add_interactions.Rd
 154dc767ae01e76722e216655b2a4eb4 *man/ml_backtest.Rd
+c54a5fea106f9b1bdcee956ef58158be *man/ml_backtest_multi.Rd
 35d0b1f367d2adc84b5b64cef94fe7f4 *man/ml_backtest_seq.Rd
 76da05db8face200f123ccb036a72250 *man/ml_ic_series_on_scores.Rd
 f247b26aacf0b65f86cd7e604c6d2774 *man/ml_make_ensemble.Rd
@@ -150,6 +151,7 @@ f02b3fb39d887a568e00c3823cae3ba9 *man/portfolio_returns.Rd
 cbf4a807d436014869b51ad656dacd88 *man/print.param_grid_result.Rd
 dd1e4c0bd75725700c7e5823a15920e1 *man/print.performance_analysis.Rd
 52f67fff2098a4d857fa48c8d8958577 *man/print.wf_optimization_result.Rd
+dd85dc03810ca3744ef0dac902e6b7af *man/pt_collect_results.Rd
 fcb5d1b15368197d0fdfc5f21689d2ab *man/rank_within_sector.Rd
 ab68819c3432f16bd75abde5eb9d9f60 *man/rebalance_calendar.Rd
 faf6b465333ed6169e3cf8c612cacae9 *man/recursive_bisection_optimized.Rd
@@ -165,6 +167,7 @@ ad931e97d0f588deb9e34488e182ce36 *man/run_example.Rd
 f7b29eef3cc2f3c810f49f919142d9e0 *man/sample_prices_daily.Rd
 cac554f76f67df076d7efe50bfb1eaba *man/sample_prices_weekly.Rd
 c647fb6bd0d5ca533c229b276dc57cb8 *man/sample_sp500_sectors.Rd
+37ff53bcf73e66b6bc4cdf2dadfa7e7c *man/scores_oos_only.Rd
 58675a17176d8781a0db877f6e82f653 *man/select_top_k_scores.Rd
 51e349c1e2b27e7c0f1fa708f6d24ac9 *man/select_top_k_scores_by_group.Rd
 c84854c23d4f2bd771fd9f3b078ac500 *man/sql_adapter.Rd
@@ -199,6 +202,6 @@ c4784b86f5f6f0cbe504aed2b823edf4 *tests/testthat/test-ml-helpers.R
 f011f1d350aca09033bfbd7c76a8628c *tests/testthat/test-ml.R
 e9cc83731f6309791aa718483ad1cd3b *tests/testthat/test-optimization.R
 aaa864883c5d676047da058c78a3f533 *tests/testthat/test-walk-forward.R
-153ee8758b2d3e60c7460cd99c21b51e *vignettes/Getting_Started_Advanced.Rmd
-8a6f7e999025a8b7a14aa79b37650f5f *vignettes/getting-started.Rmd
-344a8a5ba0c8fb5211287c4815e22dbb *vignettes/optimization-walkforward.Rmd
+7ed11206932975c61afd1d2ffbbf5086 *vignettes/Getting_Started_Advanced.Rmd
+0d2884d013fb35795194532248cd78c4 *vignettes/getting-started.Rmd
+e2ba4b521cdfe24a60c8ed0fad153a0c *vignettes/optimization-walkforward.Rmd
